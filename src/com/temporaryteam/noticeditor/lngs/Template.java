@@ -65,6 +65,13 @@ public class Template {
 		return matcher.matches();
 	}
 
+	public boolean isText(String text) {
+		final String regex = regexps.get(TokenType.TEXT);
+		final Pattern pattern = Pattern.compile(regex);
+		final Matcher matcher = pattern.matcher(text);
+		return matcher.matches();
+	}	
+
 	private final String validation(String line) throws TemplateException {
 		line = line.replaceAll("\t+", " ")
 				.replaceAll(" +", " ")
