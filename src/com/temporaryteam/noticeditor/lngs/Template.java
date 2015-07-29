@@ -27,7 +27,34 @@ public class Template {
 		this.source = source;
 	}
 
-	public void parse() {
-		source.forEach(System.out::println);
+	public void parse() throws TemplateException {
+		for (String line : source) {
+			System.out.println(validation(line));
+		}
+	}
+
+	private final String validation(String line) throws TemplateException {
+		line = line.replaceAll("\t+", " ")
+				.replaceAll(" +", " ")
+				.trim();
+
+		System.out.println(line + " " + line.indexOf("W"));
+		if (!isOneChar(' ', line)){
+			throw new TemplateException("line.indexOf(\" \") != 1");
+		}
+
+		return line;
+	}
+
+	private final boolean isOneChar(char ch, String string) {
+		int count = 0;
+		int length = string.length();
+		for (int i = 0; i < length; i++) {
+			if ((string.charAt(i) == ch) && (++count > 1)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
