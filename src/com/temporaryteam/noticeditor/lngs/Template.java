@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.io.IOException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author kalterfive
@@ -22,14 +24,34 @@ public class Template {
 	}
 
 	private final List<String> source;
+	private final Map<TokenType, String> regexps;
 
 	private Template(List<String> source) {
 		this.source = source;
+		this.regexps = new HashMap<>();
 	}
 
 	public void parse() throws TemplateException {
 		for (String line : source) {
-			System.out.println(validation(line));
+			final String[] ln = validation(line).split(" ");
+			final String regexp = ln[0];
+			final String type = ln[1];
+			switch (type) {
+				case "WORD":
+					regexps.put(TokenType.WORD, regexp);
+					break;
+
+				case "NUMBER":
+					regexps.put(TokenType.NUMBER, regexp);
+					break;
+
+				case "TEXT":
+					regexps.put(TokenType.NUMBER, regexp);
+					break;
+
+				default:
+					throw new TemplateException("");
+			}
 		}
 	}
 
