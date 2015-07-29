@@ -18,7 +18,9 @@ import java.util.regex.Pattern;
 public class Template {
 
 	public static void main(String[] args) throws Exception {
-		create(args[0]).parse();
+		final Template t = create(args[0]);
+		t.parse();
+		TestTemplate.testWord(t);
 	}
 
 	private static Template create(String path) throws IOException {
