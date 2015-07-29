@@ -7,9 +7,9 @@ public class Token {
 
 	private final String text;
 	private final TokenType type;
-	private final String color;
+	private final int color;
 
-	public Token(String text, TokenType type, String color) {
+	public Token(String text, TokenType type, int color) {
 		this.text = text;
 		this.type = type;
 		this.color = color;
@@ -23,7 +23,7 @@ public class Token {
 		return type;
 	}
 
-	public String getColor() {
+	public int getColor() {
 		return color;
 	}
 }
