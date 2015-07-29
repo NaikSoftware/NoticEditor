@@ -20,6 +20,13 @@ public class TestTemplate {
 		System.out.println(t.isNumber("0"));
 		System.out.println(t.isNumber("012"));
 		System.out.println(t.isNumber("lol"));
+
+		// bin
+		System.out.println(t.isNumber("0b12"));
+		System.out.println(t.isNumber("0b0"));
+		System.out.println(t.isNumber("0b012"));
+		System.out.println(t.isNumber("0blol"));
+		System.out.println(t.isNumber("0b00001"));
 	}
 }
 
