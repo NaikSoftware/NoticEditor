@@ -72,6 +72,13 @@ public class Template {
 		return matcher.matches();
 	}	
 
+	public boolean isNumber(String number) {
+		final String regex = regexps.get(TokenType.NUMBER);
+		final Pattern pattern = Pattern.compile(regex);
+		final Matcher matcher = pattern.matcher(number);
+		return matcher.matches();
+	}
+
 	private final String validation(String line) throws TemplateException {
 		line = line.replaceAll("\t+", " ")
 				.replaceAll(" +", " ")
