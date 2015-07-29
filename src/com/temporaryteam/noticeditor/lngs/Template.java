@@ -20,7 +20,7 @@ public class Template {
 	public static void main(String[] args) throws Exception {
 		final Template t = create(args[0]);
 		t.parse();
-		TestTemplate.testWord(t);
+		TestTemplate.testNumber(t);
 	}
 
 	private static Template create(String path) throws IOException {
@@ -51,7 +51,7 @@ public class Template {
 					break;
 
 				case "TEXT":
-					regexps.put(TokenType.NUMBER, regexp);
+					regexps.put(TokenType.TEXT, regexp);
 					break;
 
 				default:
