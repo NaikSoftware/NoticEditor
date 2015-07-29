@@ -15,18 +15,26 @@ public class TestTemplate {
 	}
 
 	public static void testNumber(Template t) {
-		// dec
+/*		// dec
 		System.out.println(t.isNumber("12"));
 		System.out.println(t.isNumber("0"));
 		System.out.println(t.isNumber("012"));
 		System.out.println(t.isNumber("lol"));
-
-		// bin
+*/
+/*		// bin
 		System.out.println(t.isNumber("0b12"));
 		System.out.println(t.isNumber("0b0"));
 		System.out.println(t.isNumber("0b012"));
 		System.out.println(t.isNumber("0blol"));
 		System.out.println(t.isNumber("0b00001"));
+*/
+		// oct
+		System.out.println(t.isNumber("012"));
+		System.out.println(t.isNumber("00"));
+		System.out.println(t.isNumber("0012"));
+		System.out.println(t.isNumber("08"));
+		System.out.println(t.isNumber("0lol"));
+		System.out.println(t.isNumber("000001"));
 	}
 }
 
