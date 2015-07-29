@@ -38,7 +38,6 @@ public class Template {
 				.replaceAll(" +", " ")
 				.trim();
 
-		System.out.println(line + " " + line.indexOf("W"));
 		if (!isOneChar(' ', line)){
 			throw new TemplateException("line.indexOf(\" \") != 1");
 		}
