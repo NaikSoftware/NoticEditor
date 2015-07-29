@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author kalterfive
  */
@@ -53,6 +56,13 @@ public class Template {
 					throw new TemplateException("");
 			}
 		}
+	}
+
+	public boolean isWord(String word) {
+		final String regex = regexps.get(TokenType.WORD);
+		final Pattern pattern = Pattern.compile(regex);
+		final Matcher matcher = pattern.matcher(word);
+		return matcher.matches();
 	}
 
 	private final String validation(String line) throws TemplateException {
