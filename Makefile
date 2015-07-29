@@ -12,7 +12,7 @@ XMLOUT=$(BUILD)/com/temporaryteam/noticeditor/view
 
 MANIFEST=manifest.mf
 OUTPUT=noticed.jar
-MAIN_CLASS=com/temporaryteam/noticeditor/Main.java
+MAIN_CLASS=com/temporaryteam/noticeditor/lngs/Template.java
 
 all: init clean compile pack
 
@@ -28,5 +28,5 @@ compile:
 	$(JC) $(JCOPTS)
 
 pack:
-	cp -rf $(XMLIN)/* $(XMLOUT)
+#	cp -rf $(XMLIN)/* $(XMLOUT)
 	$(PACKCMD)
