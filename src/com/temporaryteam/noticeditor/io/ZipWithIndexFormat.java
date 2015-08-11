@@ -1,6 +1,6 @@
 package com.temporaryteam.noticeditor.io;
 
-import com.sun.javafx.tk.Toolkit;
+import static com.temporaryteam.noticeditor.io.JsonFields.*;
 import com.temporaryteam.noticeditor.model.NoticeTree;
 import com.temporaryteam.noticeditor.model.NoticeTreeItem;
 import java.io.*;
@@ -10,9 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.scene.control.TreeItem;
-import jfx.messagebox.MessageBox;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
@@ -30,11 +28,6 @@ import org.json.JSONObject;
 public class ZipWithIndexFormat {
 
 	private static final String INDEX_JSON = "index.json";
-
-	private static final String KEY_TITLE = "title";
-	private static final String KEY_FILENAME = "filename";
-	private static final String KEY_STATUS = "status";
-	private static final String KEY_CHILDS = "childs";
 
 	private static final String BRANCH_PREFIX = "branch_";
 	private static final String NOTE_PREFIX = "note_";
