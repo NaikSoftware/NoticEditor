@@ -1,14 +1,18 @@
 package com.temporaryteam.noticeditor.io;
 
+import com.sun.javafx.tk.Toolkit;
 import com.temporaryteam.noticeditor.model.NoticeTree;
 import com.temporaryteam.noticeditor.model.NoticeTreeItem;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.control.TreeItem;
+import jfx.messagebox.MessageBox;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
@@ -34,6 +38,8 @@ public class ZipWithIndexFormat {
 	private static final String BRANCH_PREFIX = "branch_";
 	private static final String NOTE_PREFIX = "note_";
 	
+	private static Logger logger = Logger.getLogger(ZipWithIndexFormat.class.getName());
+	
 	public static ZipWithIndexFormat with(File file) throws ZipException {
 		return new ZipWithIndexFormat(file);
 	}
@@ -41,6 +47,7 @@ public class ZipWithIndexFormat {
 	private final Set<String> paths;
 	private final ZipFile zip;
 	private final ZipParameters parameters;
+	private FileLock dirLock;
 	
 	private ZipWithIndexFormat(File file) throws ZipException {
 		paths = new HashSet<>();
@@ -85,7 +92,7 @@ public class ZipWithIndexFormat {
 		}
 	}
 
-	public void export(NoticeTreeItem notice) throws IOException, JSONException, ZipException {
+	private void export(NoticeTreeItem notice) throws IOException, JSONException, ZipException {
 		parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
 		parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
 		parameters.setSourceExternalStream(true);
@@ -99,14 +106,61 @@ public class ZipWithIndexFormat {
 		export(tree.getRoot());
 	}
 	
-	private void storeFile(String path, String content) throws IOException, ZipException {
-		if (zip.isValidZipFile() && zip.getFileHeader(path) != null) {
-			zip.removeFile(path);
+	public void exportAsync(NoticeTree tree) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					export(tree.getRoot());
+					msg("Saved", MessageBox.ICON_INFORMATION);
+				} catch (Exception ex) {
+					logger.log(Level.WARNING, "Export error", ex);
+					msg("Save error: " + ex.getLocalizedMessage(), MessageBox.ICON_ERROR);
+				}
+			}
+		}).start();
+		
+	}
+	
+	private void msg(String msg, int code) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				MessageBox.show(null, msg, "", code);
+			}
+		});
+	}
+	
+	private void storeFile(String path, String content) throws IOException {
+		for (int attempt=0; attempt < 100; attempt++) {
+			InputStream stream = null;
+			try {
+				if (zip.isValidZipFile() && zip.getFileHeader(path) != null) {
+					zip.removeFile(path);
+				}
+				parameters.setFileNameInZip(path);
+				stream = IOUtil.toStream(content);
+				zip.addStream(stream, parameters);
+				return;
+			} catch (ZipException | IOException ex) {
+				try {
+					logger.log(Level.WARNING, "Error in storeFile, attempt=" + attempt, ex);
+					Thread.sleep(500);
+				} catch (InterruptedException ex1) {
+					logger.log(Level.SEVERE, null, ex1);
+				}
+			} finally {
+				if (stream != null) {
+					try {
+						stream.close();
+					} catch (IOException ex) {
+						logger.log(Level.SEVERE, "Close stream error", ex);
+					}
+				}
+			}
 		}
-		parameters.setFileNameInZip(path);
-		try (InputStream stream = IOUtil.toStream(content)) {
-			zip.addStream(stream, parameters);
-		}
+		throw new IOException("Store file " + path + " error!");
 	}
 
 	private void writeNoticesAndFillIndex(String dir, NoticeTreeItem item, JSONObject index) throws IOException, JSONException, ZipException {
