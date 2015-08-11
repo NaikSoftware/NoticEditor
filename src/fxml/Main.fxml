@@ -40,7 +40,7 @@
     <center>
         <SplitPane dividerPositions="0.25" prefWidth="200.0" prefHeight="160.0">
             <items>
-                <SplitPane SplitPane.resizableWithParent="false" dividerPositions="0.8" orientation="VERTICAL">
+                <SplitPane SplitPane.resizableWithParent="false" dividerPositions="0.75" orientation="VERTICAL">
                     <items>
                         <TreeView fx:id="noticeTreeView" editable="true" prefHeight="200.0" prefWidth="200.0" showRoot="false">
                             <contextMenu>
