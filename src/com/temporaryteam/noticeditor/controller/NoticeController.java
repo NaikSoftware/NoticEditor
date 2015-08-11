@@ -19,10 +19,7 @@ import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 
 import com.temporaryteam.noticeditor.Main;
-import com.temporaryteam.noticeditor.io.DocumentFormat;
-import com.temporaryteam.noticeditor.io.ExportException;
-import com.temporaryteam.noticeditor.io.ExportStrategy;
-import com.temporaryteam.noticeditor.io.ExportStrategyHolder;
+import com.temporaryteam.noticeditor.io.*;
 import com.temporaryteam.noticeditor.model.NoticeTree;
 import com.temporaryteam.noticeditor.model.NoticeTreeItem;
 import com.temporaryteam.noticeditor.model.PreviewStyles;
@@ -231,7 +228,19 @@ public class NoticeController {
 		} else {
 			strategy = ExportStrategyHolder.ZIP;
 		}
-		DocumentFormat.save(file, noticeTree, strategy);
+		DocumentFormat.save(file, noticeTree, strategy, new SaveListener() {
+
+			@Override
+			public void onComplete() {
+				MessageBox.show(main.getPrimaryStage(), resources.getString("saved"), "", MessageBox.ICON_INFORMATION);
+			}
+
+			@Override
+			public void onError(ExportException ex) {
+				MessageBox.show(main.getPrimaryStage(), ex.getLocalizedMessage(),
+						resources.getString("save_error"), MessageBox.ICON_ERROR);
+			}
+		});
 	}
 
 	@FXML
@@ -245,10 +254,11 @@ public class NoticeController {
 		try {
 			ExportStrategyHolder.HTML.setProcessor(processor);
 			ExportStrategyHolder.HTML.export(destDir, noticeTree);
-			MessageBox.show(main.getPrimaryStage(), "Export success!", "", MessageBox.OK);
+			MessageBox.show(main.getPrimaryStage(), resources.getString("export_success"), "", MessageBox.ICON_INFORMATION);
 		} catch (ExportException e) {
 			logger.log(Level.SEVERE, null, e);
-			MessageBox.show(main.getPrimaryStage(), "Export failed!", "", MessageBox.OK);
+			MessageBox.show(main.getPrimaryStage(), e.getLocalizedMessage(),
+					resources.getString("save_error"), MessageBox.ICON_ERROR);
 		}
 	}
 
@@ -267,11 +277,11 @@ public class NoticeController {
 	private void handleAbout(ActionEvent event) {
 
 	}
-	
+
 	public void setNoticeSettingsController(NoticeSettingsController controller) {
 		noticeSettingsController = controller;
 	}
-	
+
 	public NoticeTreeItem getCurrentNotice() {
 		return currentTreeItem;
 	}

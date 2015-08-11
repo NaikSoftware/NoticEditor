@@ -9,7 +9,7 @@ import org.json.JSONException;
  * Export notices to json.
  * @author aNNiMON
  */
-public class JsonExportStrategy implements ExportStrategy {
+public class JsonExportStrategy extends ExportStrategy {
 
 	@Override
 	public void export(File file, NoticeTree notice) {

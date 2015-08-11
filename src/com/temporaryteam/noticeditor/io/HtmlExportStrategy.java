@@ -16,7 +16,7 @@ import org.pegdown.PegDownProcessor;
  * Export notices to html.
  * @author aNNiMON
  */
-public class HtmlExportStrategy implements ExportStrategy {
+public class HtmlExportStrategy extends ExportStrategy {
 	
 	private PegDownProcessor processor;
 	private Map<NoticeTreeItem, String> filenames;

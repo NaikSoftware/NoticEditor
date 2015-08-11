@@ -22,7 +22,7 @@ public final class DocumentFormat {
 		}
 	}
 	
-	public static void save(File file, NoticeTree tree, ExportStrategy strategy) {
-		strategy.export(file, tree);
+	public static void save(File file, NoticeTree tree, ExportStrategy strategy, SaveListener listener) {
+		strategy.exportAsync(file, tree, listener);
 	}
 }
