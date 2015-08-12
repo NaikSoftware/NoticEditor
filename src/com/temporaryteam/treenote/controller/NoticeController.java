@@ -68,19 +68,17 @@ public class NoticeController {
 	@FXML
 	private ResourceBundle resources; // magic!
 
-	private final Main main;
+	private final Stage primaryStage;
 	private WebEngine engine;
 	private final PegDownProcessor processor;
 	private NoticeTree noticeTree;
 	private NoticeTreeItem currentTreeItem;
 	private File fileSaved;
 	private NoticeSettingsController noticeSettingsController;
-	private Stage primaryStage;
 
-	public NoticeController(Main main) {
-		this.main = main;
+	public NoticeController(Stage stage) {
+		this.primaryStage = stage;
 		processor = new PegDownProcessor(AUTOLINKS | TABLES | FENCED_CODE_BLOCKS);
-		primaryStage = main.getPrimaryStage();
 	}
 
 	/**
@@ -271,6 +269,10 @@ public class NoticeController {
 
 	@FXML
 	private void handleImportFromWeb(ActionEvent event) {
+		if (currentTreeItem == null || currentTreeItem.isBranch()) {
+			new SimpleAlert(resources.getString("select_notice"), primaryStage).showAndWait();
+			return;
+		}
 		TextInputDialog dialog = new TextInputDialog("http://");
 		dialog.setHeaderText(resources.getString("input_url"));
 		dialog.initOwner(primaryStage);

@@ -84,7 +84,7 @@ public final class IOUtil {
 		return result.toString();
 	}
 	
-	public static String stringFromUrl(String url) throws IOException, IllegalArgumentException {
+	public static String stringFromUrl(String url) throws IOException {
 		return stringFromStream(new URL(url).openStream());
 	}
 }
