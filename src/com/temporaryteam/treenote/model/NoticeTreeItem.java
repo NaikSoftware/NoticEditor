@@ -1,4 +1,4 @@
-package com.temporaryteam.noticeditor.model;
+package com.temporaryteam.treenote.model;
 
 import java.util.ArrayList;
 import javafx.collections.ObservableList;

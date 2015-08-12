@@ -1,4 +1,4 @@
-package com.temporaryteam.noticeditor.view;
+package com.temporaryteam.treenote.view;
 
 import java.io.File;
 import javafx.stage.DirectoryChooser;

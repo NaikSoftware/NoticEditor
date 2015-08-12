@@ -1,4 +1,4 @@
-package com.temporaryteam.noticeditor.model;
+package com.temporaryteam.treenote.model;
 
 public enum PreviewStyles {
 	DEFAULT("Default"),

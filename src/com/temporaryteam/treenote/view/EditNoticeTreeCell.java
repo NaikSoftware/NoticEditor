@@ -1,6 +1,6 @@
-package com.temporaryteam.noticeditor.view;
+package com.temporaryteam.treenote.view;
 
-import com.temporaryteam.noticeditor.model.NoticeTreeItem;
+import com.temporaryteam.treenote.model.NoticeTreeItem;
 
 import javafx.event.EventHandler;
 import javafx.scene.Node;

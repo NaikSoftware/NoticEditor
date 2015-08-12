@@ -1,4 +1,4 @@
-package com.temporaryteam.noticeditor.io;
+package com.temporaryteam.treenote.io;
 
 /**
  *

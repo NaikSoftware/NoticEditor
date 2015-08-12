@@ -1,8 +1,8 @@
-package com.temporaryteam.noticeditor.io;
+package com.temporaryteam.treenote.io;
 
-import static com.temporaryteam.noticeditor.io.JsonFields.*;
-import com.temporaryteam.noticeditor.model.NoticeTree;
-import com.temporaryteam.noticeditor.model.NoticeTreeItem;
+import static com.temporaryteam.treenote.io.JsonFields.*;
+import com.temporaryteam.treenote.model.NoticeTree;
+import com.temporaryteam.treenote.model.NoticeTreeItem;
 import java.io.*;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;

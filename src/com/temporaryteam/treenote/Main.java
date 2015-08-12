@@ -1,7 +1,7 @@
-package com.temporaryteam.noticeditor;
+package com.temporaryteam.treenote;
 
-import com.temporaryteam.noticeditor.controller.NoticeController;
-import com.temporaryteam.noticeditor.controller.NoticeSettingsController;
+import com.temporaryteam.treenote.controller.NoticeController;
+import com.temporaryteam.treenote.controller.NoticeSettingsController;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -14,18 +14,14 @@ import javafx.util.Callback;
 public class Main extends Application {
 
 	private Stage primaryStage;
-
-	public void Main() {
-	}
 	
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("NoticEditor");
+		this.primaryStage.setTitle("TreeNote");
 		initRootLayout();
 	}
 
-	
 	/**
 	 * Initializes root layout
 	 */
@@ -60,9 +56,6 @@ public class Main extends Application {
 		}
 	}
 
-	/**
-	 * Returns primary stage
-	 */
 	public Stage getPrimaryStage() {
 		return primaryStage;
 	}

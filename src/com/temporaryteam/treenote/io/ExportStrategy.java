@@ -1,6 +1,6 @@
-package com.temporaryteam.noticeditor.io;
+package com.temporaryteam.treenote.io;
 
-import com.temporaryteam.noticeditor.model.NoticeTree;
+import com.temporaryteam.treenote.model.NoticeTree;
 import java.io.File;
 import javafx.application.Platform;
 

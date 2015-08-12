@@ -1,7 +1,7 @@
-package com.temporaryteam.noticeditor.io;
+package com.temporaryteam.treenote.io;
 
-import com.temporaryteam.noticeditor.model.NoticeTree;
-import com.temporaryteam.noticeditor.model.NoticeTreeItem;
+import com.temporaryteam.treenote.model.NoticeTree;
+import com.temporaryteam.treenote.model.NoticeTreeItem;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

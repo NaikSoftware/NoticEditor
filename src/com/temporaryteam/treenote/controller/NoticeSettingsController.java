@@ -1,6 +1,6 @@
-package com.temporaryteam.noticeditor.controller;
+package com.temporaryteam.treenote.controller;
 
-import com.temporaryteam.noticeditor.model.NoticeTreeItem;
+import com.temporaryteam.treenote.model.NoticeTreeItem;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
