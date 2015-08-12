@@ -23,7 +23,6 @@ import javafx.scene.control.*;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 
-import com.temporaryteam.treenote.Main;
 import com.temporaryteam.treenote.io.*;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
@@ -134,7 +133,7 @@ public class NoticeController {
 			}
 		});
 		noticeArea.wrapTextProperty().bind(wordWrapItem.selectedProperty());
-		rebuildTree(resources.getString("help"));
+		rebuildTree(resources.getString("help_msg"));
 	}
 
 	/**

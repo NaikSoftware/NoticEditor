@@ -37,7 +37,7 @@ public class Main extends Application {
 				@Override
 				public Object call(Class<?> param) {
 					if (param == NoticeController.class) {
-						noticeController = new NoticeController(Main.this);
+						noticeController = new NoticeController(primaryStage);
 						return noticeController;
 					} else if (param == NoticeSettingsController.class) {
 						noticeSettingsController = new NoticeSettingsController(noticeController);

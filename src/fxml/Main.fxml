@@ -12,27 +12,27 @@
     <top>
         <MenuBar>
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" text="%file">
                     <items>
-                        <MenuItem onAction="#handleNew" text="New" />
-                        <MenuItem onAction="#handleOpen" text="Open" />
-                        <MenuItem onAction="#handleSave" text="Save" />
-                        <MenuItem onAction="#handleSaveAs" text="Save As" />
-                        <MenuItem onAction="#handleExportHtml" text="Export to HTML" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleImportFromWeb" text="Import from web" />
-                        <MenuItem onAction="#handleExit" text="Exit" />
+                        <MenuItem onAction="#handleNew" text="%new" />
+                        <MenuItem onAction="#handleOpen" text="%open" />
+                        <MenuItem onAction="#handleSave" text="%save" />
+                        <MenuItem onAction="#handleSaveAs" text="%save_as" />
+                        <MenuItem onAction="#handleExportHtml" text="%export_to_html" />
+                        <MenuItem onAction="#handleImportFromWeb" text="%import_from_web" />
+                        <MenuItem onAction="#handleExit" text="%exit" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="View">
+                <Menu mnemonicParsing="false" text="%view">
                     <items>
-                        <MenuItem onAction="#handleSwitchOrientation" text="Switch orientation" />
-                        <CheckMenuItem fx:id="wordWrapItem" text="Word wrap" />
-                        <Menu fx:id="previewStyleMenu" text="Preview style" />
+                        <MenuItem onAction="#handleSwitchOrientation" text="%switch_orientation" />
+                        <CheckMenuItem fx:id="wordWrapItem" text="%word_wrap" />
+                        <Menu fx:id="previewStyleMenu" text="%style" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu mnemonicParsing="false" text="%help">
                     <items>
-                        <MenuItem onAction="#handleAbout" text="About" />
+                        <MenuItem onAction="#handleAbout" text="%about" />
                     </items>
                 </Menu>
             </menus>
