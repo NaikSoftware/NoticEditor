@@ -24,18 +24,21 @@ import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 
 import com.temporaryteam.treenote.Main;
+import com.temporaryteam.treenote.io.*;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.model.PreviewStyles;
 import com.temporaryteam.treenote.view.Chooser;
 import com.temporaryteam.treenote.view.EditNoticeTreeCell;
+import com.temporaryteam.treenote.view.SimpleAlert;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import jfx.messagebox.MessageBox;
+import javafx.stage.Stage;
 
 public class NoticeController {
 
@@ -72,10 +75,12 @@ public class NoticeController {
 	private NoticeTreeItem currentTreeItem;
 	private File fileSaved;
 	private NoticeSettingsController noticeSettingsController;
+	private Stage primaryStage;
 
 	public NoticeController(Main main) {
 		this.main = main;
 		processor = new PegDownProcessor(AUTOLINKS | TABLES | FENCED_CODE_BLOCKS);
+		primaryStage = main.getPrimaryStage();
 	}
 
 	/**
@@ -190,7 +195,7 @@ public class NoticeController {
 			fileSaved = Chooser.file().open()
 					.filter(Chooser.SUPPORTED, Chooser.ALL)
 					.title("Open notice")
-					.show(main.getPrimaryStage());
+					.show(primaryStage);
 			if (fileSaved == null) {
 				return;
 			}
@@ -218,7 +223,7 @@ public class NoticeController {
 		fileSaved = Chooser.file().save()
 				.filter(Chooser.ZIP, Chooser.JSON)
 				.title("Save notice")
-				.show(main.getPrimaryStage());
+				.show(primaryStage);
 		if (fileSaved == null)
 			return;
 
@@ -237,13 +242,12 @@ public class NoticeController {
 
 			@Override
 			public void onComplete() {
-				MessageBox.show(main.getPrimaryStage(), resources.getString("saved"), "", MessageBox.ICON_INFORMATION);
+				new SimpleAlert(resources.getString("saved"), primaryStage).showAndWait();
 			}
 
 			@Override
 			public void onError(ExportException ex) {
-				MessageBox.show(main.getPrimaryStage(), ex.getLocalizedMessage(),
-						resources.getString("save_error"), MessageBox.ICON_ERROR);
+				new SimpleAlert(ex, resources.getString("save_error"), primaryStage).showAndWait();
 			}
 		});
 	}
@@ -252,18 +256,31 @@ public class NoticeController {
 	private void handleExportHtml(ActionEvent event) {
 		File destDir = Chooser.directory()
 				.title("Select directory to save HTML files")
-				.show(main.getPrimaryStage());
+				.show(primaryStage);
 		if (destDir == null)
 			return;
 
 		try {
 			ExportStrategyHolder.HTML.setProcessor(processor);
 			ExportStrategyHolder.HTML.export(destDir, noticeTree);
-			MessageBox.show(main.getPrimaryStage(), resources.getString("export_success"), "", MessageBox.ICON_INFORMATION);
+			new SimpleAlert(resources.getString("export_success"), primaryStage).showAndWait();
 		} catch (ExportException e) {
-			logger.log(Level.SEVERE, null, e);
-			MessageBox.show(main.getPrimaryStage(), e.getLocalizedMessage(),
-					resources.getString("save_error"), MessageBox.ICON_ERROR);
+			new SimpleAlert(e, resources.getString("save_error"), primaryStage).showAndWait();
+		}
+	}
+
+	@FXML
+	private void handleImportFromWeb(ActionEvent event) {
+		TextInputDialog dialog = new TextInputDialog("http://");
+		dialog.setHeaderText(resources.getString("input_url"));
+		dialog.initOwner(primaryStage);
+		Optional<String> response = dialog.showAndWait();
+		if (response.isPresent()) {
+			try {
+				noticeArea.setText(IOUtil.stringFromUrl(response.get()));
+			} catch (Exception ex) {
+				new SimpleAlert(ex, resources.getString("loading_error"), primaryStage).showAndWait();
+			}
 		}
 	}
 
