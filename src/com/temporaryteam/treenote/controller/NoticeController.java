@@ -280,7 +280,7 @@ public class NoticeController {
 		TextInputDialog dialog = new TextInputDialog("http://");
 		dialog.setHeaderText(resources.getString("input_url"));
 		dialog.initOwner(primaryStage);
-		dialog.getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, ev -> {
+		dialog.showAndWait().ifPresent((url) -> {
 			toggleWaiting(true);
 			WebImporter.from(dialog.getEditor().getText()).grab((pair) -> {
 				toggleWaiting(false);
@@ -293,7 +293,6 @@ public class NoticeController {
 				return null;
 			});
 		});
-		dialog.show();
 	}
 
 	@FXML
