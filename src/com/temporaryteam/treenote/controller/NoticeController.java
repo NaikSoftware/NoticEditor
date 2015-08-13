@@ -282,13 +282,13 @@ public class NoticeController {
 		dialog.initOwner(primaryStage);
 		dialog.showAndWait().ifPresent((url) -> {
 			toggleWaiting(true);
-			WebImporter.from(dialog.getEditor().getText()).grab((pair) -> {
+			WebImporter.from(url).grab((pair) -> {
 				toggleWaiting(false);
 				String data = pair.getValue();
 				if (data == null) {
 					new SimpleAlert(pair.getKey(), resources.getString("loading_error"), primaryStage).showAndWait();
 				} else {
-					noticeArea.setText(pair.getValue());
+					noticeArea.setText(data);
 				}
 				return null;
 			});
