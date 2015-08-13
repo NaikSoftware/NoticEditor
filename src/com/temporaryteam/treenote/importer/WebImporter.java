@@ -1,10 +1,11 @@
 package com.temporaryteam.treenote.importer;
 
 import com.temporaryteam.treenote.io.IOUtil;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
+import javafx.application.Platform;
+import javafx.util.Callback;
+import javafx.util.Pair;
 
 /**
  * Load page from Internet, insert scripts, styles, images directly to html.
@@ -12,18 +13,25 @@ import java.net.URL;
  */
 public class WebImporter {
 	
-	public static WebImporter from(String url_str) throws MalformedURLException, IOException {
-		return new WebImporter(new URL(url_str).openStream());
+	public static WebImporter from(String url) {
+		return new WebImporter(url);
 	}
 	
-	private final InputStream stream;
+	private final String url;
 	
-	private WebImporter(InputStream stream) {
-		this.stream = stream;
+	private WebImporter(String url) {
+		this.url = url;
 	}
 	
-	public String grab() throws IOException {
-		String data = IOUtil.stringFromStream(stream);
-		return data;
+	public void grab(final Callback<Pair<Exception, String>, Void> calback) {
+		new Thread(() -> {
+			try {
+				InputStream stream = new URL(url).openStream();
+				String data = IOUtil.stringFromStream(stream);
+				Platform.runLater(() -> calback.call(new Pair<>(null, data)));
+			} catch (Exception ex) {
+				Platform.runLater(() -> calback.call(new Pair<>(ex, null)));
+			}
+		}).start();
 	}
 }

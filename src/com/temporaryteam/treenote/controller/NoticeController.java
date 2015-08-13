@@ -5,7 +5,6 @@ import com.temporaryteam.treenote.io.ExportException;
 import com.temporaryteam.treenote.io.ExportStrategy;
 import com.temporaryteam.treenote.io.ExportStrategyHolder;
 import com.temporaryteam.treenote.io.DocumentFormat;
-import com.temporaryteam.treenote.io.SaveListener;
 import org.json.JSONException;
 
 import org.pegdown.PegDownProcessor;
@@ -24,14 +23,12 @@ import javafx.scene.control.*;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 
-import com.temporaryteam.treenote.io.*;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.model.PreviewStyles;
 import com.temporaryteam.treenote.view.Chooser;
 import com.temporaryteam.treenote.view.EditNoticeTreeCell;
 import com.temporaryteam.treenote.view.SimpleAlert;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,6 +63,12 @@ public class NoticeController {
 	private TreeView<String> noticeTreeView;
 
 	@FXML
+	private ProgressBar progressBar;
+	
+	@FXML
+	private SplitPane mainPane;
+
+	@FXML
 	private ResourceBundle resources; // magic!
 
 	private final Stage primaryStage;
@@ -87,6 +90,7 @@ public class NoticeController {
 	@FXML
 	private void initialize() {
 		engine = viewer.getEngine();
+		progressBar.managedProperty().bind(progressBar.visibleProperty()); // for hide progress bar
 
 		// Set preview styles menu items
 		ToggleGroup previewStyleGroup = new ToggleGroup();
@@ -236,17 +240,15 @@ public class NoticeController {
 		} else {
 			strategy = ExportStrategyHolder.ZIP;
 		}
-		DocumentFormat.save(file, noticeTree, strategy, new SaveListener() {
-
-			@Override
-			public void onComplete() {
+		toggleWaiting(true);
+		DocumentFormat.save(file, noticeTree, strategy, (error) -> {
+			toggleWaiting(false);
+			if (error == null) {
 				new SimpleAlert(resources.getString("saved"), primaryStage).showAndWait();
+			} else {
+				new SimpleAlert(error, resources.getString("save_error"), primaryStage).showAndWait();
 			}
-
-			@Override
-			public void onError(ExportException ex) {
-				new SimpleAlert(ex, resources.getString("save_error"), primaryStage).showAndWait();
-			}
+			return null;
 		});
 	}
 
@@ -258,6 +260,7 @@ public class NoticeController {
 		if (destDir == null)
 			return;
 
+		toggleWaiting(true);
 		try {
 			ExportStrategyHolder.HTML.setProcessor(processor);
 			ExportStrategyHolder.HTML.export(destDir, noticeTree);
@@ -265,6 +268,7 @@ public class NoticeController {
 		} catch (ExportException e) {
 			new SimpleAlert(e, resources.getString("save_error"), primaryStage).showAndWait();
 		}
+		toggleWaiting(false);
 	}
 
 	@FXML
@@ -276,14 +280,20 @@ public class NoticeController {
 		TextInputDialog dialog = new TextInputDialog("http://");
 		dialog.setHeaderText(resources.getString("input_url"));
 		dialog.initOwner(primaryStage);
-		Optional<String> response = dialog.showAndWait();
-		if (response.isPresent()) {
-			try {
-				noticeArea.setText(WebImporter.from(response.get()).grab());
-			} catch (Exception ex) {
-				new SimpleAlert(ex, resources.getString("loading_error"), primaryStage).showAndWait();
-			}
-		}
+		dialog.getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, ev -> {
+			toggleWaiting(true);
+			WebImporter.from(dialog.getEditor().getText()).grab((pair) -> {
+				toggleWaiting(false);
+				String data = pair.getValue();
+				if (data == null) {
+					new SimpleAlert(pair.getKey(), resources.getString("loading_error"), primaryStage).showAndWait();
+				} else {
+					noticeArea.setText(pair.getValue());
+				}
+				return null;
+			});
+		});
+		dialog.show();
 	}
 
 	@FXML
@@ -308,6 +318,11 @@ public class NoticeController {
 
 	public NoticeTreeItem getCurrentNotice() {
 		return currentTreeItem;
+	}
+
+	private void toggleWaiting(boolean wait) {
+		progressBar.setVisible(wait);
+		mainPane.setDisable(wait);
 	}
 
 }

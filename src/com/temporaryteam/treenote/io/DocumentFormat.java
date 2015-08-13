@@ -3,6 +3,7 @@ package com.temporaryteam.treenote.io;
 import com.temporaryteam.treenote.model.NoticeTree;
 import java.io.File;
 import java.io.IOException;
+import javafx.util.Callback;
 import net.lingala.zip4j.exception.ZipException;
 import org.json.JSONException;
 
@@ -20,7 +21,7 @@ public final class DocumentFormat {
 		}
 	}
 	
-	public static void save(File file, NoticeTree tree, ExportStrategy strategy, SaveListener listener) {
-		strategy.exportAsync(file, tree, listener);
+	public static void save(File file, NoticeTree tree, ExportStrategy strategy, Callback<Exception, Void> callback) {
+		strategy.exportAsync(file, tree, callback);
 	}
 }

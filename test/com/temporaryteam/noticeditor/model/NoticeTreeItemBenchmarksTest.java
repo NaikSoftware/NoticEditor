@@ -37,17 +37,10 @@ public class NoticeTreeItemBenchmarksTest {
 	@Test
 	public void testJsonExport() throws JSONException, IOException {
 		DocumentFormat.save(File.createTempFile("test", ".json"), tree, ExportStrategyHolder.JSON,
-				new SaveListener() {
-
-					@Override
-					public void onComplete() {
-						out.println("Export to JSON complete");
-					}
-
-					@Override
-					public void onError(ExportException ex) {
-						out.println("Export to JSON error: " + ex);
-					}
+				(error) -> {
+					if (error == null) out.println("Export to JSON complete");
+					else out.println("Export to JSON error: " + error);
+					return null;
 				});
 	}
 }

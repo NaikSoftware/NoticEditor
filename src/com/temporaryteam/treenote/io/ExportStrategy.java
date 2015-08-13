@@ -3,6 +3,7 @@ package com.temporaryteam.treenote.io;
 import com.temporaryteam.treenote.model.NoticeTree;
 import java.io.File;
 import javafx.application.Platform;
+import javafx.util.Callback;
 
 /**
  * Export notices.strategy.
@@ -12,13 +13,13 @@ public abstract class ExportStrategy {
 	
 	public abstract void export(File file, NoticeTree tree) throws ExportException;
 	
-	public void exportAsync(File file, NoticeTree tree, SaveListener listener) {
+	public void exportAsync(File file, NoticeTree tree, Callback<Exception, Void> callback) {
 		new Thread(() -> {
 			try {
 				export(file, tree);
-				Platform.runLater(() -> listener.onComplete());
+				Platform.runLater(() -> callback.call(null));
 			} catch (ExportException ex) {
-				Platform.runLater(() -> listener.onError(ex));
+				Platform.runLater(() -> callback.call(ex));
 			}
 		}).start();
 	}
