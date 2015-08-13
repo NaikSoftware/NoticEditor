@@ -1,7 +1,6 @@
 package com.temporaryteam.treenote.io;
 
 import java.io.*;
-import java.net.URL;
 import java.net.URLEncoder;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +83,4 @@ public final class IOUtil {
 		return result.toString();
 	}
 	
-	public static String stringFromUrl(String url) throws IOException {
-		return stringFromStream(new URL(url).openStream());
-	}
 }

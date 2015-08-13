@@ -1,5 +1,6 @@
 package com.temporaryteam.treenote.controller;
 
+import com.temporaryteam.treenote.importer.WebImporter;
 import com.temporaryteam.treenote.io.ExportException;
 import com.temporaryteam.treenote.io.ExportStrategy;
 import com.temporaryteam.treenote.io.ExportStrategyHolder;
@@ -278,7 +279,7 @@ public class NoticeController {
 		Optional<String> response = dialog.showAndWait();
 		if (response.isPresent()) {
 			try {
-				noticeArea.setText(IOUtil.stringFromUrl(response.get()));
+				noticeArea.setText(WebImporter.from(response.get()).grab());
 			} catch (Exception ex) {
 				new SimpleAlert(ex, resources.getString("loading_error"), primaryStage).showAndWait();
 			}
