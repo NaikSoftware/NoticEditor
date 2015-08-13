@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URL;
 import javafx.application.Platform;
 import javafx.util.Callback;
-import javafx.util.Pair;
 
 /**
  * Load page from Internet, insert scripts, styles, images directly to html.
@@ -23,14 +22,14 @@ public class WebImporter {
 		this.url = url;
 	}
 	
-	public void grab(final Callback<Pair<Exception, String>, Void> calback) {
+	public void grab(final Callback<Object, Void> calback) {
 		new Thread(() -> {
 			try {
 				InputStream stream = new URL(url).openStream();
 				String data = IOUtil.stringFromStream(stream);
-				Platform.runLater(() -> calback.call(new Pair<>(null, data)));
+				Platform.runLater(() -> calback.call(data));
 			} catch (Exception ex) {
-				Platform.runLater(() -> calback.call(new Pair<>(ex, null)));
+				Platform.runLater(() -> calback.call(ex));
 			}
 		}).start();
 	}

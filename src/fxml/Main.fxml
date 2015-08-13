@@ -8,7 +8,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.NoticeController">
+<BorderPane maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.NoticeController">
     <top>
         <MenuBar>
             <menus>
@@ -39,36 +39,36 @@
         </MenuBar>
     </top>
     <center>
-        <VBox>
-           <children>
-           <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0" visible="false" /> 
-           <SplitPane fx:id="mainPane" dividerPositions="0.25" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-               <items>
-                   <SplitPane dividerPositions="0.75" orientation="VERTICAL" SplitPane.resizableWithParent="false">
-                       <items>
-                           <TreeView fx:id="noticeTreeView" editable="true" prefHeight="200.0" prefWidth="200.0" showRoot="false">
-                               <contextMenu>
-                                   <ContextMenu>
-                                       <items>
-                                           <MenuItem fx:id="addBranchItem" onAction="#handleContextMenu" text="Add branch" />
-                                           <MenuItem fx:id="addNoticeItem" onAction="#handleContextMenu" text="Add notice" />
-                                           <MenuItem fx:id="deleteItem" onAction="#handleContextMenu" text="Delete" />
-                                       </items>
-                                   </ContextMenu>
-                               </contextMenu>
-                           </TreeView>
-                           <fx:include source="NoticeSettings.fxml" />
-                       </items>
-                   </SplitPane>
-                   <SplitPane fx:id="editorPanel" dividerPositions="0.5" prefHeight="400.0" prefWidth="390.0">
-                       <items>
-                           <TextArea fx:id="noticeArea" prefHeight="400.0" prefWidth="215.0" />
-                           <WebView fx:id="viewer" prefHeight="400.0" prefWidth="310.0" />
-                       </items>
-                   </SplitPane>
-               </items>
-           </SplitPane>
-           </children>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <children>
+                <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0" visible="false" /> 
+                <SplitPane fx:id="mainPane" dividerPositions="0.25" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                    <items>
+                        <SplitPane dividerPositions="0.75" maxHeight="1.7976931348623157E308" orientation="VERTICAL" SplitPane.resizableWithParent="false">
+                            <items>
+                                <TreeView fx:id="noticeTreeView" editable="true" prefHeight="200.0" prefWidth="200.0" showRoot="false">
+                                    <contextMenu>
+                                        <ContextMenu>
+                                            <items>
+                                                <MenuItem fx:id="addBranchItem" onAction="#handleContextMenu" text="Add branch" />
+                                                <MenuItem fx:id="addNoticeItem" onAction="#handleContextMenu" text="Add notice" />
+                                                <MenuItem fx:id="deleteItem" onAction="#handleContextMenu" text="Delete" />
+                                            </items>
+                                        </ContextMenu>
+                                    </contextMenu>
+                                </TreeView>
+                                <fx:include source="NoticeSettings.fxml" />
+                            </items>
+                        </SplitPane>
+                        <SplitPane fx:id="editorPanel" dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="400.0">
+                            <items>
+                                <TextArea fx:id="noticeArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="310.0" />
+                                <WebView fx:id="viewer" minHeight="-1.0" minWidth="-1.0" prefHeight="400.0" prefWidth="310.0" />
+                            </items>
+                        </SplitPane>
+                    </items>
+                </SplitPane>
+            </children>
         </VBox>
     </center>
 </BorderPane>
