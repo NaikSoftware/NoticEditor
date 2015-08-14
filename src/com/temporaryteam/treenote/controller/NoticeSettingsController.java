@@ -30,11 +30,11 @@ public class NoticeSettingsController implements Initializable {
 	@FXML
 	private ChoiceBox<String> choiceBoxNoticeStatus;
 
-	private final NoticeController noticeController;
+	private final MainController noticeController;
 	private ResourceBundle res;
 	private final Stage stage;
 
-	public NoticeSettingsController(NoticeController noticeController, Stage stage) {
+	public NoticeSettingsController(MainController noticeController, Stage stage) {
 		this.noticeController = noticeController;
 		this.stage = stage;
 	}
@@ -77,7 +77,11 @@ public class NoticeSettingsController implements Initializable {
 	private void handleRemoveAttach(ActionEvent event) {
 		Attached toRemove = listAttached.getSelectionModel().getSelectedItem();
 		if (toRemove != null) {
-			noticeController.getCurrentNotice().getAttaches().remove(toRemove);
+			if (toRemove.getState() == Attached.State.NEW) {
+				noticeController.getCurrentNotice().getAttaches().remove(toRemove);
+			} else {
+				toRemove.changeState(Attached.State.REMOVED);
+			}
 		}
 	}
 
@@ -89,6 +93,16 @@ public class NoticeSettingsController implements Initializable {
 		}
 		noticeController.getCurrentNotice().addAttach(
 				new Attached(Attached.State.NEW, file.getAbsolutePath(), file.getName()));
+	}
+	
+	@FXML
+	private void handleSaveFile(ActionEvent event) {
+		
+	}
+	
+	@FXML
+	private void handleInsertInPage(ActionEvent event) {
+		
 	}
 
 	private String tr(String key) {

@@ -1,6 +1,6 @@
 package com.temporaryteam.treenote;
 
-import com.temporaryteam.treenote.controller.NoticeController;
+import com.temporaryteam.treenote.controller.MainController;
 import com.temporaryteam.treenote.controller.NoticeSettingsController;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -31,13 +31,13 @@ public class Main extends Application {
 					ResourceBundle.getBundle("resources.translate.Language", Locale.getDefault()));
 			loader.setControllerFactory(new Callback<Class<?>, Object>() {
 
-				NoticeController noticeController;
+				MainController noticeController;
 				NoticeSettingsController noticeSettingsController;
 				
 				@Override
 				public Object call(Class<?> param) {
-					if (param == NoticeController.class) {
-						noticeController = new NoticeController(primaryStage);
+					if (param == MainController.class) {
+						noticeController = new MainController(primaryStage);
 						return noticeController;
 					} else if (param == NoticeSettingsController.class) {
 						noticeSettingsController = new NoticeSettingsController(noticeController, primaryStage);

@@ -8,7 +8,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.NoticeController">
+<BorderPane maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.MainController">
     <top>
         <MenuBar>
             <menus>
@@ -46,17 +46,52 @@
                     <items>
                         <SplitPane dividerPositions="0.75" maxHeight="1.7976931348623157E308" orientation="VERTICAL" SplitPane.resizableWithParent="false">
                             <items>
-                                <TreeView fx:id="noticeTreeView" editable="true" prefHeight="200.0" prefWidth="200.0" showRoot="false">
-                                    <contextMenu>
-                                        <ContextMenu>
-                                            <items>
-                                                <MenuItem fx:id="addBranchItem" onAction="#handleContextMenu" text="Add branch" />
-                                                <MenuItem fx:id="addNoticeItem" onAction="#handleContextMenu" text="Add notice" />
-                                                <MenuItem fx:id="deleteItem" onAction="#handleContextMenu" text="Delete" />
-                                            </items>
-                                        </ContextMenu>
-                                    </contextMenu>
-                                </TreeView>
+                                <GridPane>
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" vgrow="NEVER" />
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="100.0" vgrow="SOMETIMES" />
+                                    </rowConstraints>
+                                    <children>
+                                        <TreeView fx:id="noticeTreeView" editable="true" maxHeight="1.7976931348623157E308" prefWidth="200.0" showRoot="false" GridPane.rowIndex="1">
+                                            <contextMenu>
+                                                <ContextMenu>
+                                                    <items>
+                                                        <MenuItem fx:id="addBranchItem" onAction="#handleContextMenu" text="%add_branch" />
+                                                        <MenuItem fx:id="addNoticeItem" onAction="#handleContextMenu" text="%add_notice" />
+                                                        <MenuItem fx:id="deleteItem" onAction="#handleContextMenu" text="%remove" />
+                                                    </items>
+                                                </ContextMenu>
+                                            </contextMenu>
+                                        </TreeView>
+                                        <GridPane>
+                                            <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints minHeight="35.0" vgrow="NEVER" />
+                                            </rowConstraints>
+                                            <children>
+                                                <SplitMenuButton mnemonicParsing="false" text="%add_notice" onAction="#handleAddNotice" >
+                                                    <GridPane.margin>
+                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                    </GridPane.margin>
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false" text="%add_branch" onAction="#handleAddBranch" />
+                                                    </items>
+                                                </SplitMenuButton>
+                                                <Button prefWidth="100.0" GridPane.columnIndex="1" text="%remove" GridPane.halignment="RIGHT" onAction="#handleRemoveItem"  >
+                                                    <GridPane.margin>
+                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                    </GridPane.margin>
+                                                </Button>
+                                            </children>
+                                        </GridPane>
+                                    </children>
+                                </GridPane>
                                 <fx:include source="NoticeSettings.fxml" />
                             </items>
                         </SplitPane>

@@ -1,8 +1,8 @@
 package com.temporaryteam.treenote.model;
 
-import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.Event;
 import javafx.scene.control.TreeItem;
 
@@ -15,12 +15,13 @@ public class NoticeTreeItem extends TreeItem<String> {
 
 	public static final int STATUS_NORMAL = 0;
 	public static final int STATUS_IMPORTANT = 1;
-
+	
 	private String title;
 	private ObservableList<TreeItem<String>> childs;
 	private String content;
 	private int status;
-	private ObservableList<Attached> attaches = FXCollections.observableArrayList();
+	private final ObservableList<Attached> attaches = FXCollections.observableArrayList();
+	private final FilteredList<Attached> filteredAttaches = new FilteredList<>(attaches);
 
 	/**
 	 * Create branch node on tree.
@@ -116,6 +117,10 @@ public class NoticeTreeItem extends TreeItem<String> {
 
 	public ObservableList<Attached> getAttaches() {
 		return attaches;
+	}
+	
+	public FilteredList<Attached> getAttachesForDisplay() {
+		return filteredAttaches;
 	}
 
 }

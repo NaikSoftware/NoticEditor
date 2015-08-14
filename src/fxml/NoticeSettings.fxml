@@ -30,24 +30,28 @@
         <ListView fx:id="listAttached" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
         <GridPane GridPane.rowIndex="4">
             <columnConstraints>
-                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="60.0" prefWidth="100.0" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="40.0" prefHeight="40.0" valignment="CENTER" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-      
-                <Button onAction="#handleRemoveAttach" text="%remove" GridPane.halignment="LEFT">
+                <Button onAction="#handleSelectAttach" text="%select_file" GridPane.columnIndex="0" GridPane.halignment="LEFT">
                     <GridPane.margin>
-                        <Insets bottom="5.0" left="5.0" top="5.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button onAction="#handleSelectAttach" text="%select_file" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                <MenuButton mnemonicParsing="false" text="%actions" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleSaveFile" text="%save_to_fs" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleInsertInPage" text="%insert_in_text" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleRemoveAttach" text="%remove" />
+                    </items>
                     <GridPane.margin>
-                        <Insets bottom="5.0" right="5.0" top="5.0" />
+                        <Insets left="5.0" right="5.0" />
                     </GridPane.margin>
-                </Button>
+                </MenuButton>
             </children>
         </GridPane>
         <GridPane GridPane.rowIndex="1">

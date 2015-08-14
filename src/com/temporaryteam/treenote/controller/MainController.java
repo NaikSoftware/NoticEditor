@@ -38,9 +38,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.stage.Stage;
 
-public class NoticeController {
+public class MainController {
 
-	private static final Logger logger = Logger.getLogger(NoticeController.class.getName());
+	private static final Logger logger = Logger.getLogger(MainController.class.getName());
 
 	@FXML
 	private SplitPane editorPanel;
@@ -80,7 +80,7 @@ public class NoticeController {
 	private File fileSaved;
 	private NoticeSettingsController noticeSettingsController;
 
-	public NoticeController(Stage stage) {
+	public MainController(Stage stage) {
 		this.primaryStage = stage;
 		processor = new PegDownProcessor(AUTOLINKS | TABLES | FENCED_CODE_BLOCKS);
 	}
@@ -167,24 +167,37 @@ public class NoticeController {
 		noticeSettingsController.open(currentTreeItem);
 	}
 
-	/**
-	 * Handler
-	 */
 	@FXML
 	private void handleContextMenu(ActionEvent event) {
 		Object source = event.getSource();
 		if (source == addBranchItem) {
-			noticeTree.addItem(new NoticeTreeItem("New branch"), currentTreeItem);
+			handleAddNotice(event);
 		} else if (source == addNoticeItem) {
-			noticeTree.addItem(new NoticeTreeItem("New notice", "", NoticeTreeItem.STATUS_NORMAL), currentTreeItem);
+			handleAddBranch(event);
 		} else if (source == deleteItem) {
-			noticeTree.removeItem(currentTreeItem);
-			if (currentTreeItem != null && currentTreeItem.getParent() == null) {
-				currentTreeItem = null;
-				noticeSettingsController.open(null);
-			}
+			handleRemoveItem(event);
 		}
 	}
+	
+	@FXML
+	private void handleAddNotice(ActionEvent event) {
+		noticeTree.addItem(new NoticeTreeItem("New notice", "", NoticeTreeItem.STATUS_NORMAL), currentTreeItem);
+	}
+	
+	@FXML
+	private void handleAddBranch(ActionEvent event) {
+		noticeTree.addItem(new NoticeTreeItem("New branch"), currentTreeItem);
+	}
+	
+	@FXML
+	private void handleRemoveItem(ActionEvent event) {
+		noticeTree.removeItem(currentTreeItem);
+		if (currentTreeItem != null && currentTreeItem.getParent() == null) {
+			currentTreeItem = null;
+			noticeSettingsController.open(null);
+		}
+	}
+	
 
 	@FXML
 	private void handleNew(ActionEvent event) {

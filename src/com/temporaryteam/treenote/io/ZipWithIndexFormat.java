@@ -1,6 +1,7 @@
 package com.temporaryteam.treenote.io;
 
 import static com.temporaryteam.treenote.io.JsonFields.*;
+import com.temporaryteam.treenote.model.Attached;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import java.io.*;
@@ -83,7 +84,15 @@ public class ZipWithIndexFormat {
 		} else {
 			// ../note_filename/filename.md
 			final String mdPath = newDir + filename + ".md";
-			return new NoticeTreeItem(title, readFile(mdPath), status);
+			NoticeTreeItem item = new NoticeTreeItem(title, readFile(mdPath), status);
+			JSONArray attaches = index.getJSONArray(KEY_ATTACHES);
+			for (int i = 0; i < attaches.length(); i++) {
+				JSONObject attach = attaches.getJSONObject(i);
+				item.addAttach(new Attached(Attached.State.ATTACHED,
+						attach.getString(KEY_ATTACH_PATH), attach.getString(KEY_ATTACH_NAME)));
+				
+			}
+			return item;
 		}
 	}
 
