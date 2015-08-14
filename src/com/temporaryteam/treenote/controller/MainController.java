@@ -142,12 +142,9 @@ public class MainController {
 		rebuildTree(tr("help_msg"));
 	}
 
-	/**
-	 * Rebuild tree
-	 */
 	public void rebuildTree(String defaultNoticeContent) {
 		noticeTree = new NoticeTree(new NoticeTreeItem("Root"));
-		currentTreeItem = new NoticeTreeItem("Default notice", defaultNoticeContent, NoticeTreeItem.STATUS_NORMAL);
+		currentTreeItem = new NoticeTreeItem(tr("notice_name"), defaultNoticeContent, NoticeTreeItem.STATUS_NORMAL);
 		noticeTree.addItem(currentTreeItem, noticeTree.getRoot());
 		noticeTreeView.setRoot(noticeTree.getRoot());
 		open();
@@ -181,12 +178,12 @@ public class MainController {
 	
 	@FXML
 	private void handleAddNotice(ActionEvent event) {
-		noticeTree.addItem(new NoticeTreeItem("New notice", "", NoticeTreeItem.STATUS_NORMAL), currentTreeItem);
+		noticeTree.addItem(new NoticeTreeItem(tr("notice_name"), "", NoticeTreeItem.STATUS_NORMAL), currentTreeItem);
 	}
 	
 	@FXML
 	private void handleAddBranch(ActionEvent event) {
-		noticeTree.addItem(new NoticeTreeItem("New branch"), currentTreeItem);
+		noticeTree.addItem(new NoticeTreeItem(tr("branch_name")), currentTreeItem);
 	}
 	
 	@FXML
