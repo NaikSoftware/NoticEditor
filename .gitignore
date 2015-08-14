@@ -3,3 +3,5 @@
 .vimrc
 *.swp
 /nbproject/private/
+/out
+/.idea/workspace.xml

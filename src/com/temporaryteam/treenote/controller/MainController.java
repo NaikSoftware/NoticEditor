@@ -168,9 +168,9 @@ public class MainController {
 	private void handleContextMenu(ActionEvent event) {
 		Object source = event.getSource();
 		if (source == addBranchItem) {
-			handleAddNotice(event);
-		} else if (source == addNoticeItem) {
 			handleAddBranch(event);
+		} else if (source == addNoticeItem) {
+			handleAddNotice(event);
 		} else if (source == deleteItem) {
 			handleRemoveItem(event);
 		}
