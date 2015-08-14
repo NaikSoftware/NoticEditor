@@ -28,10 +28,6 @@ public class NoticeSettingsController implements Initializable {
 	@FXML
 	private ListView<Attached> listAttached;
 	@FXML
-	private Button btnRemoveFile;
-	@FXML
-	private Button btnSelectFile;
-	@FXML
 	private ChoiceBox<String> choiceBoxNoticeStatus;
 
 	private final NoticeController noticeController;
@@ -87,7 +83,7 @@ public class NoticeSettingsController implements Initializable {
 
 	@FXML
 	private void handleSelectAttach(ActionEvent event) {
-		File file = Chooser.file().title(tr("select_file")).open().show(stage);
+		File file = Chooser.file().filter(Chooser.ALL).title(tr("select_file")).open().show(stage);
 		if (file == null) {
 			return;
 		}

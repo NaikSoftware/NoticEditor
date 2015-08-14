@@ -38,12 +38,12 @@
             </rowConstraints>
             <children>
       
-                <Button fx:id="btnRemoveFile" onAction="#handleRemoveAttach" text="%remove" GridPane.halignment="LEFT">
+                <Button onAction="#handleRemoveAttach" text="%remove" GridPane.halignment="LEFT">
                     <GridPane.margin>
                         <Insets bottom="5.0" left="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnSelectFile" onAction="#handleSelectAttach" text="%select_file" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                <Button onAction="#handleSelectAttach" text="%select_file" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
                     <GridPane.margin>
                         <Insets bottom="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
