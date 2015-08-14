@@ -1,5 +1,7 @@
 package com.temporaryteam.treenote.model;
 
+import java.util.Objects;
+
 /**
  * Represent attached file in notice.
  * @author Naik
@@ -12,10 +14,12 @@ public class Attached {
 	
 	private State state;
 	private final String path;
+	private final String name;
 	
-	public Attached(State state, String path) {
+	public Attached(State state, String path, String name) {
 		this.state = state;
 		this.path = path;
+		this.name = name;
 	}
 	
 	public State getState() {
@@ -28,6 +32,15 @@ public class Attached {
 	
 	public String getPath() {
 		return path;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 	
 }

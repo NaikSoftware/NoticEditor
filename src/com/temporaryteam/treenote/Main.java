@@ -40,7 +40,7 @@ public class Main extends Application {
 						noticeController = new NoticeController(primaryStage);
 						return noticeController;
 					} else if (param == NoticeSettingsController.class) {
-						noticeSettingsController = new NoticeSettingsController(noticeController);
+						noticeSettingsController = new NoticeSettingsController(noticeController, primaryStage);
 						noticeController.setNoticeSettingsController(noticeSettingsController);
 						return noticeSettingsController;
 					}
