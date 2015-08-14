@@ -28,6 +28,7 @@ import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.model.PreviewStyles;
 import com.temporaryteam.treenote.view.Chooser;
 import com.temporaryteam.treenote.view.EditNoticeTreeCell;
+import com.temporaryteam.treenote.view.ImportHtmlDialog;
 import com.temporaryteam.treenote.view.SimpleAlert;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -138,7 +139,7 @@ public class NoticeController {
 			}
 		});
 		noticeArea.wrapTextProperty().bind(wordWrapItem.selectedProperty());
-		rebuildTree(resources.getString("help_msg"));
+		rebuildTree(tr("help_msg"));
 	}
 
 	/**
@@ -187,7 +188,7 @@ public class NoticeController {
 
 	@FXML
 	private void handleNew(ActionEvent event) {
-		rebuildTree(resources.getString("help"));
+		rebuildTree(tr("help"));
 		fileSaved = null;
 	}
 
@@ -244,9 +245,9 @@ public class NoticeController {
 		DocumentFormat.save(file, noticeTree, strategy, (error) -> {
 			toggleWaiting(false);
 			if (error == null) {
-				new SimpleAlert(resources.getString("saved"), primaryStage).showAndWait();
+				new SimpleAlert(tr("saved"), primaryStage).showAndWait();
 			} else {
-				new SimpleAlert(error, resources.getString("save_error"), primaryStage).showAndWait();
+				new SimpleAlert(error, tr("save_error"), primaryStage).showAndWait();
 			}
 			return null;
 		});
@@ -264,9 +265,9 @@ public class NoticeController {
 		try {
 			ExportStrategyHolder.HTML.setProcessor(processor);
 			ExportStrategyHolder.HTML.export(destDir, noticeTree);
-			new SimpleAlert(resources.getString("export_success"), primaryStage).showAndWait();
+			new SimpleAlert(tr("export_success"), primaryStage).showAndWait();
 		} catch (ExportException e) {
-			new SimpleAlert(e, resources.getString("save_error"), primaryStage).showAndWait();
+			new SimpleAlert(e, tr("save_error"), primaryStage).showAndWait();
 		}
 		toggleWaiting(false);
 	}
@@ -274,18 +275,16 @@ public class NoticeController {
 	@FXML
 	private void handleImportFromWeb(ActionEvent event) {
 		if (currentTreeItem == null || currentTreeItem.isBranch()) {
-			new SimpleAlert(resources.getString("select_notice"), primaryStage).showAndWait();
+			new SimpleAlert(tr("select_notice"), primaryStage).showAndWait();
 			return;
 		}
-		TextInputDialog dialog = new TextInputDialog("http://");
-		dialog.setHeaderText(resources.getString("input_url"));
-		dialog.initOwner(primaryStage);
+		ImportHtmlDialog dialog = new ImportHtmlDialog(primaryStage, tr("input_url"), resources);
 		dialog.showAndWait().ifPresent((url) -> {
 			toggleWaiting(true);
-			WebImporter.from(url).grab((result) -> {
+			WebImporter.from(url).mode(dialog.getSelectedMode()).grab((result) -> {
 				toggleWaiting(false);
 				if (result instanceof Exception) {
-					new SimpleAlert((Exception) result, resources.getString("loading_error"), primaryStage).showAndWait();
+					new SimpleAlert((Exception) result, tr("loading_error"), primaryStage).showAndWait();
 				} else {
 					noticeArea.setText(result.toString());
 				}
@@ -321,6 +320,16 @@ public class NoticeController {
 	private void toggleWaiting(boolean wait) {
 		progressBar.setVisible(wait);
 		mainPane.setDisable(wait);
+	}
+	
+	/**
+	 * Translate string by key
+	 * 
+	 * @param key
+	 * @return translated string
+	 */
+	private String tr(String key) {
+		return resources.getString(key);
 	}
 
 }

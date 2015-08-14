@@ -1,12 +1,8 @@
 package com.temporaryteam.treenote.model;
 
-import java.util.ArrayList;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.scene.control.TreeItem;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Model representation of notice. Contains notice data or branch data
@@ -47,10 +43,20 @@ public class NoticeTreeItem extends TreeItem<String> {
 		childs = getChildren();
 	}
 
+	/**
+	 * Do not use this directly. For adding exists {@link  NoticeTree#addItem}
+	 *
+	 * @param item
+	 */
 	public void addChild(NoticeTreeItem item) {
 		childs.add(item);
 	}
 
+	/**
+	 * Shortcut for {@code !isBranch()}.
+	 *
+	 * @return
+	 */
 	@Override
 	public boolean isLeaf() {
 		return content != null;

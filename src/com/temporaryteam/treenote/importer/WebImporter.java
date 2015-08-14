@@ -1,10 +1,12 @@
 package com.temporaryteam.treenote.importer;
 
-import com.temporaryteam.treenote.io.IOUtil;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import javafx.application.Platform;
 import javafx.util.Callback;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
 
 /**
  * Load page from Internet, insert scripts, styles, images directly to html.
@@ -12,25 +14,69 @@ import javafx.util.Callback;
  */
 public class WebImporter {
 	
+	public enum Mode {
+		ONLY_TEXT, BASIC, BASIC_WITH_IMAGES, RELAXED, SIMPLE_TEXT, ORIGINAL
+	}
+	
 	public static WebImporter from(String url) {
 		return new WebImporter(url);
 	}
 	
 	private final String url;
+	private String addr;
+	private String html;
+	private Mode mode;
 	
 	private WebImporter(String url) {
 		this.url = url;
+		this.addr = url;
+		int endProtocol = url.indexOf("://") + 3;
+		int end = url.lastIndexOf("/");
+		if (endProtocol > 0) {
+			addr = url.substring(0, end > endProtocol ? end : addr.length());
+		}
+	}
+	
+	public WebImporter mode(Mode mode) {
+		this.mode = mode;
+		return this;
 	}
 	
 	public void grab(final Callback<Object, Void> calback) {
 		new Thread(() -> {
 			try {
 				InputStream stream = new URL(url).openStream();
-				String data = IOUtil.stringFromStream(stream);
-				Platform.runLater(() -> calback.call(data));
+				readHTML(stream);
+				clear();
+				Platform.runLater(() -> calback.call(html));
 			} catch (Exception ex) {
 				Platform.runLater(() -> calback.call(ex));
 			}
 		}).start();
 	}
+	
+	private void readHTML(InputStream stream) throws IOException {
+		final StringBuilder result = new StringBuilder();
+		try (Reader isr = new InputStreamReader(stream);
+				BufferedReader reader = new BufferedReader(isr)) {
+			String line;
+			while ( (line = reader.readLine()) != null ) {
+				result.append(line.trim()).append(System.lineSeparator());
+			}
+		}
+		html = result.toString();
+	}
+	
+	private void clear() {
+		Whitelist whitelist = Whitelist.basic();
+		switch (mode) {
+			case ONLY_TEXT: whitelist = Whitelist.none(); break;
+			case BASIC_WITH_IMAGES: whitelist = Whitelist.basicWithImages(); break;
+			case RELAXED: whitelist = Whitelist.relaxed(); break;
+			case SIMPLE_TEXT: whitelist = Whitelist.simpleText(); break;
+			case ORIGINAL: return;
+		}
+		html = Jsoup.clean(html, addr, whitelist, new Document.OutputSettings().indentAmount(0));
+	}
+	
 }
