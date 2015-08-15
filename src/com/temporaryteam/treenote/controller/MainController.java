@@ -43,6 +43,9 @@ public class MainController {
 	private static final Logger logger = Logger.getLogger(MainController.class.getName());
 
 	@FXML
+	private NoticeSettingsController noticeSettingsController;
+
+	@FXML
 	private SplitPane editorPanel;
 
 	@FXML
@@ -78,7 +81,6 @@ public class MainController {
 	private NoticeTree noticeTree;
 	private NoticeTreeItem currentTreeItem;
 	private File fileSaved;
-	private NoticeSettingsController noticeSettingsController;
 
 	public MainController(Stage stage) {
 		this.primaryStage = stage;
@@ -90,6 +92,7 @@ public class MainController {
 	 */
 	@FXML
 	private void initialize() {
+        noticeSettingsController.setMainController(this);
 		engine = viewer.getEngine();
 		progressBar.managedProperty().bind(progressBar.visibleProperty()); // for hide progress bar
 
@@ -115,28 +118,17 @@ public class MainController {
 		}
 
 		noticeTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		noticeTreeView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<String>>() {
-			@Override
-			public void changed(ObservableValue<? extends TreeItem<String>> observable, TreeItem<String> oldValue, TreeItem<String> newValue) {
-				currentTreeItem = (NoticeTreeItem) newValue;
-				open();
-			}
+		noticeTreeView.getSelectionModel().selectedItemProperty().addListener((observable, oldVal, newVal) -> {
+            currentTreeItem = (NoticeTreeItem) newVal;
+            open();
 		});
-		noticeTreeView.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
-			@Override
-			public TreeCell<String> call(TreeView<String> p) {
-				return new EditNoticeTreeCell();
-			}
-		});
+		noticeTreeView.setCellFactory(treeView ->  new EditNoticeTreeCell());
 
-		noticeArea.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				engine.loadContent(processor.markdownToHtml(newValue));
-				if (currentTreeItem != null) {
-					currentTreeItem.changeContent(newValue);
-				}
-			}
+		noticeArea.textProperty().addListener((observable, oldVal, newVal) -> {
+            engine.loadContent(processor.markdownToHtml(newVal));
+            if (currentTreeItem != null) {
+                currentTreeItem.changeContent(newVal);
+            }
 		});
 		noticeArea.wrapTextProperty().bind(wordWrapItem.selectedProperty());
 		rebuildTree(tr("help_msg"));
@@ -198,7 +190,7 @@ public class MainController {
 
 	@FXML
 	private void handleNew(ActionEvent event) {
-		rebuildTree(tr("help"));
+		rebuildTree(tr("help_msg"));
 		fileSaved = null;
 	}
 
@@ -317,10 +309,6 @@ public class MainController {
 	@FXML
 	private void handleAbout(ActionEvent event) {
 
-	}
-
-	public void setNoticeSettingsController(NoticeSettingsController controller) {
-		noticeSettingsController = controller;
 	}
 
 	public NoticeTreeItem getCurrentNotice() {

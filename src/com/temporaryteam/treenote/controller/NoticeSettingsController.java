@@ -30,12 +30,11 @@ public class NoticeSettingsController implements Initializable {
 	@FXML
 	private ChoiceBox<String> choiceBoxNoticeStatus;
 
-	private final MainController noticeController;
+	private MainController mainController;
 	private ResourceBundle res;
 	private final Stage stage;
 
-	public NoticeSettingsController(MainController noticeController, Stage stage) {
-		this.noticeController = noticeController;
+	public NoticeSettingsController(Stage stage) {
 		this.stage = stage;
 	}
 
@@ -52,13 +51,17 @@ public class NoticeSettingsController implements Initializable {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				NoticeTreeItem currentNotice = noticeController.getCurrentNotice();
+				NoticeTreeItem currentNotice = mainController.getCurrentNotice();
 				if (currentNotice != null && currentNotice.isLeaf()) {
 					currentNotice.setStatus(newValue.intValue());
 				}
 			}
 		});
 		open(null);
+	}
+
+	public void setMainController(MainController mainController) {
+		this.mainController = mainController;
 	}
 
 	public void open(NoticeTreeItem item) {
@@ -78,7 +81,7 @@ public class NoticeSettingsController implements Initializable {
 		Attached toRemove = listAttached.getSelectionModel().getSelectedItem();
 		if (toRemove != null) {
 			if (toRemove.getState() == Attached.State.NEW) {
-				noticeController.getCurrentNotice().getAttaches().remove(toRemove);
+				mainController.getCurrentNotice().getAttaches().remove(toRemove);
 			} else {
 				toRemove.changeState(Attached.State.REMOVED);
 			}
@@ -91,7 +94,7 @@ public class NoticeSettingsController implements Initializable {
 		if (file == null) {
 			return;
 		}
-		noticeController.getCurrentNotice().addAttach(
+		mainController.getCurrentNotice().addAttach(
 				new Attached(Attached.State.NEW, file.getAbsolutePath(), file.getName()));
 	}
 	

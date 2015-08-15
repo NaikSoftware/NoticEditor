@@ -92,7 +92,7 @@
                                         </GridPane>
                                     </children>
                                 </GridPane>
-                                <fx:include source="NoticeSettings.fxml" />
+                                <fx:include fx:id="noticeSettings" source="NoticeSettings.fxml" />
                             </items>
                         </SplitPane>
                         <SplitPane fx:id="editorPanel" dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="400.0">

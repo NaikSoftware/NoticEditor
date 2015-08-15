@@ -17,6 +17,7 @@ public final class DocumentFormat {
 		try {
 			return ZipWithIndexFormat.with(file).importDocument();
 		} catch (ZipException | IOException | JSONException e) {
+			e.printStackTrace();
 			return JsonFormat.with(file).importDocument();
 		}
 	}
