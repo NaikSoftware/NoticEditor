@@ -15,7 +15,7 @@ import org.jsoup.safety.Whitelist;
 public class WebImporter {
 	
 	public enum Mode {
-		ONLY_TEXT, BASIC, BASIC_WITH_IMAGES, RELAXED, SIMPLE_TEXT, ORIGINAL
+		RELAXED, ONLY_TEXT, ORIGINAL, BASIC, BASIC_WITH_IMAGES, SIMPLE_TEXT
 	}
 	
 	public static WebImporter from(String url) {

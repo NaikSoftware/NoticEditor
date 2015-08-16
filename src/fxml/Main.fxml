@@ -18,8 +18,12 @@
                         <MenuItem onAction="#handleOpen" text="%open" />
                         <MenuItem onAction="#handleSave" text="%save" />
                         <MenuItem onAction="#handleSaveAs" text="%save_as" />
-                        <MenuItem onAction="#handleExportHtml" text="%export_to_html" />
-                        <MenuItem onAction="#handleImportFromWeb" text="%import_from_web" />
+                        <Menu text="%export_to">
+                            <MenuItem onAction="#handleExportHtml" text="HTML" />
+                        </Menu>
+                        <Menu text="%import_from">
+                            <MenuItem onAction="#handleImportFromWeb" text="Web" />
+                        </Menu>
                         <MenuItem onAction="#handleExit" text="%exit" />
                     </items>
                 </Menu>
