@@ -13,114 +13,114 @@ import javafx.scene.control.TreeItem;
  */
 public class NoticeTreeItem extends TreeItem<String> {
 
-	public static final int STATUS_NORMAL = 0;
-	public static final int STATUS_IMPORTANT = 1;
-	
-	private String title;
-	private ObservableList<TreeItem<String>> childs;
-	private String content;
-	private int status;
-	private final ObservableList<Attached> attaches = FXCollections.observableArrayList();
-	private final FilteredList<Attached> filteredAttaches = new FilteredList<>(attaches);
+    public static final int STATUS_NORMAL = 0;
+    public static final int STATUS_IMPORTANT = 1;
 
-	/**
-	 * Create branch node on tree.
-	 *
-	 * @param title
-	 */
-	public NoticeTreeItem(String title) {
-		this(title, null, 0);
-	}
+    private String title;
+    private ObservableList<TreeItem<String>> childs;
+    private String content;
+    private int status;
+    private final ObservableList<Attached> attaches = FXCollections.observableArrayList();
+    private final FilteredList<Attached> filteredAttaches = attaches.filtered(attached -> attached.getState() != Attached.State.REMOVED);
 
-	/**
-	 * Create leaf node on tree.
-	 *
-	 * @param title
-	 * @param content
-	 * @param status
-	 */
-	public NoticeTreeItem(String title, String content, int status) {
-		super(title);
-		this.title = title;
-		this.content = content;
-		this.status = status;
-		childs = getChildren();
-	}
+    /**
+     * Create branch node on tree.
+     *
+     * @param title
+     */
+    public NoticeTreeItem(String title) {
+        this(title, null, 0);
+    }
 
-	/**
-	 * Do not use this directly. For adding exists {@link  NoticeTree#addItem}
-	 *
-	 * @param item
-	 */
-	public void addChild(NoticeTreeItem item) {
-		childs.add(item);
-	}
+    /**
+     * Create leaf node on tree.
+     *
+     * @param title
+     * @param content
+     * @param status
+     */
+    public NoticeTreeItem(String title, String content, int status) {
+        super(title);
+        this.title = title;
+        this.content = content;
+        this.status = status;
+        childs = getChildren();
+    }
 
-	/**
-	 * Shortcut for {@code !isBranch()}.
-	 *
-	 * @return
-	 */
-	@Override
-	public boolean isLeaf() {
-		return content != null;
-	}
+    /**
+     * Do not use this directly. For adding exists {@link  NoticeTree#addItem}
+     *
+     * @param item
+     */
+    public void addChild(NoticeTreeItem item) {
+        childs.add(item);
+    }
 
-	/**
-	 * @return true if content == null
-	 */
-	public boolean isBranch() {
-		return content == null;
-	}
+    /**
+     * Shortcut for {@code !isBranch()}.
+     *
+     * @return
+     */
+    @Override
+    public boolean isLeaf() {
+        return content != null;
+    }
 
-	/**
-	 * @return notice content or null if its a branch
-	 */
-	public String getContent() {
-		return content;
-	}
+    /**
+     * @return true if content == null
+     */
+    public boolean isBranch() {
+        return content == null;
+    }
 
-	/**
-	 * Content will be changed only when is a leaf node.
-	 *
-	 * @param content
-	 */
-	public void changeContent(String content) {
-		if (isLeaf()) {
-			this.content = content;
-		}
-	}
+    /**
+     * @return notice content or null if its a branch
+     */
+    public String getContent() {
+        return content;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * Content will be changed only when is a leaf node.
+     *
+     * @param content
+     */
+    public void changeContent(String content) {
+        if (isLeaf()) {
+            this.content = content;
+        }
+    }
 
-	public void setTitle(String title) {
-		setValue(title);
-		this.title = title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-		Event.fireEvent(this, new TreeModificationEvent(childrenModificationEvent(), this));
-	}
+    public void setTitle(String title) {
+        setValue(title);
+        this.title = title;
+    }
 
-	public int getStatus() {
-		return status;
-	}
-	
-	public void addAttach(Attached attached) {
-		if (isLeaf()) {
-			attaches.add(attached);
-		}
-	}
+    public void setStatus(int status) {
+        this.status = status;
+        Event.fireEvent(this, new TreeModificationEvent(childrenModificationEvent(), this));
+    }
 
-	public ObservableList<Attached> getAttaches() {
-		return attaches;
-	}
-	
-	public FilteredList<Attached> getAttachesForDisplay() {
-		return filteredAttaches;
-	}
+    public int getStatus() {
+        return status;
+    }
+
+    public void addAttach(Attached attached) {
+        if (isLeaf()) {
+            attaches.add(attached);
+        }
+    }
+
+    public ObservableList<Attached> getAttaches() {
+        return attaches;
+    }
+
+    public FilteredList<Attached> getAttachesForDisplay() {
+        return filteredAttaches;
+    }
 
 }
