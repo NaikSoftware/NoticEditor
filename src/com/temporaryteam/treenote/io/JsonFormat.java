@@ -27,7 +27,6 @@ public class JsonFormat {
 	}
 
 	public NoticeTree importDocument() throws IOException, JSONException {
-		System.out.println(IOUtil.readContent(file));
 		JSONObject json = new JSONObject(IOUtil.readContent(file));
 		return new NoticeTree(jsonToTree(json));
 	}

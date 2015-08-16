@@ -13,7 +13,6 @@ import static org.pegdown.Extensions.*;
 import java.io.File;
 import java.io.IOException;
 
-import javafx.util.Callback;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -31,16 +30,9 @@ import com.temporaryteam.treenote.view.EditNoticeTreeCell;
 import com.temporaryteam.treenote.view.ImportHtmlDialog;
 import com.temporaryteam.treenote.view.SimpleAlert;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.stage.Stage;
 
 public class MainController {
-
-	private static final Logger logger = Logger.getLogger(MainController.class.getName());
 
 	@FXML
 	private NoticeSettingsController noticeSettingsController;
@@ -218,7 +210,7 @@ public class MainController {
 			currentTreeItem = null;
 			open();
 		} catch (IOException | JSONException e) {
-			logger.log(Level.SEVERE, null, e);
+			new SimpleAlert(e, tr("open_error"), primaryStage).showAndWait();
 		}
 	}
 
