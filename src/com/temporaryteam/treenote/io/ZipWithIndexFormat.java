@@ -140,18 +140,19 @@ public class ZipWithIndexFormat {
 
 		if (item.isBranch()) {
 			// ../branch_filename
-			ArrayList list = new ArrayList();
+			JSONArray jsonArray = new JSONArray();
 			for (TreeItem<String> object : item.getChildren()) {
 				NoticeTreeItem child = (NoticeTreeItem) object;
 
 				JSONObject indexEntry = new JSONObject();
 				writeNoticesAndFillIndex(newDir + "/", child, indexEntry);
-				list.add(indexEntry);
+				jsonArray.put(indexEntry);
 			}
-			index.put(KEY_CHILDS, new JSONArray(list));
+			index.put(KEY_CHILDS, jsonArray);
 		} else {
 			// ../note_filename/filename.md
 			index.put(KEY_STATUS, item.getStatus());
+            index.put(KEY_ATTACHES, new JSONArray());
 			storeFile(newDir + "/" + filename + ".md", item.getContent());
 		}
 	}

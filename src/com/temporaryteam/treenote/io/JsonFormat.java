@@ -52,19 +52,19 @@ public class JsonFormat {
 
 	private void treeToJson(NoticeTreeItem item, JSONObject json) throws JSONException {
 		json.put(KEY_TITLE, item.getTitle());
-		JSONArray childs = new JSONArray();
 		if (item.isBranch()) {
+			JSONArray childs = new JSONArray();
 			for (TreeItem<String> object : item.getChildren()) {
 				NoticeTreeItem child = (NoticeTreeItem) object;
 				JSONObject entry = new JSONObject();
 				treeToJson(child, entry);
 				childs.put(entry);
 			}
+			json.put(KEY_CHILDS, childs);
 		} else {
 			json.put(KEY_STATUS, item.getStatus());
 			json.put(KEY_CONTENT, item.getContent());
 		}
-		json.put(KEY_CHILDS, childs);
 	}
 
 }
