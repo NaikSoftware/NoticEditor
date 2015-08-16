@@ -49,7 +49,7 @@ public class NoticeSettingsController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.res = rb;
         choiceBoxNoticeStatus.setItems(FXCollections.observableArrayList(
-                rb.getString("normal"), rb.getString("important")
+                tr("normal"), tr("important")
         ));
         choiceBoxNoticeStatus.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 
@@ -88,7 +88,8 @@ public class NoticeSettingsController implements Initializable {
                 mainController.getCurrentNotice().getAttaches().remove(toRemove);
             } else {
                 toRemove.changeState(Attached.State.REMOVED);
-                listAttached.setItems(mainController.getCurrentNotice().getAttachesForDisplay());
+                mainController.getCurrentNotice().getAttachesForDisplay()
+                        .setPredicate(attached -> attached.getState() != Attached.State.REMOVED);
             }
         }
     }
