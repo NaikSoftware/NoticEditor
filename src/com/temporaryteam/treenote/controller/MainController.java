@@ -5,6 +5,8 @@ import com.temporaryteam.treenote.io.ExportException;
 import com.temporaryteam.treenote.io.ExportStrategy;
 import com.temporaryteam.treenote.io.ExportStrategyHolder;
 import com.temporaryteam.treenote.io.DocumentFormat;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import org.json.JSONException;
 
 import org.pegdown.PegDownProcessor;
@@ -308,8 +310,16 @@ public class MainController {
 
 	@FXML
 	private void handleAbout(ActionEvent event) {
-
-	}
+        try {
+            Stage stage = new Stage();
+            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/InfoFrame.fxml"), resources));
+            stage.setScene(scene);
+            stage.initOwner(primaryStage);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	public NoticeTreeItem getCurrentNotice() {
 		return currentTreeItem;
