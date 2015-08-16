@@ -8,8 +8,8 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.MainController">
-    <top>
+<VBox maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.MainController">
+    <children>
         <MenuBar>
             <menus>
                 <Menu mnemonicParsing="false" text="%file">
@@ -37,12 +37,10 @@
                 </Menu>
             </menus>
         </MenuBar>
-    </top>
-    <center>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+        <VBox maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS" maxWidth="1.7976931348623157E308">
             <children>
                 <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0" visible="false" /> 
-                <SplitPane fx:id="mainPane" dividerPositions="0.25" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                <SplitPane fx:id="mainPane" dividerPositions="0.35" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <items>
                         <SplitPane dividerPositions="0.75" maxHeight="1.7976931348623157E308" orientation="VERTICAL" SplitPane.resizableWithParent="false">
                             <items>
@@ -97,7 +95,7 @@
                         </SplitPane>
                         <SplitPane fx:id="editorPanel" dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="400.0">
                             <items>
-                                <TextArea fx:id="noticeArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="310.0" />
+                                <TextArea fx:id="noticeArea" minWidth="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="310.0" />
                                 <WebView fx:id="viewer" minHeight="-1.0" minWidth="-1.0" prefHeight="400.0" prefWidth="310.0" />
                             </items>
                         </SplitPane>
@@ -105,5 +103,5 @@
                 </SplitPane>
             </children>
         </VBox>
-    </center>
-</BorderPane>
+    </children>
+</VBox>
