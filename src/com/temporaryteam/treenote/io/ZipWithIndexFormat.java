@@ -5,11 +5,9 @@ import com.temporaryteam.treenote.model.Attached;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import java.io.*;
-import java.nio.channels.FileLock;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import javafx.scene.control.TreeItem;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -21,7 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Document format that stores to zip archive with index.json.
+ * Document format that stores to currZip archive with index.json.
  *
  * @author aNNiMON
  */
@@ -32,21 +30,22 @@ public class ZipWithIndexFormat {
 	private static final String BRANCH_PREFIX = "branch_";
 	private static final String NOTE_PREFIX = "note_";
 
-	private static Logger logger = Logger.getLogger(ZipWithIndexFormat.class.getName());
-
 	public static ZipWithIndexFormat with(File file) throws ZipException {
 		return new ZipWithIndexFormat(file);
 	}
 
 	private final Set<String> paths;
-	private final ZipFile zip;
-	private final ZipParameters parameters;
-	private FileLock dirLock;
+    private ZipFile currZip;
+    private ZipFile tempZip;
+    private ZipParameters parameters;
 
 	private ZipWithIndexFormat(File file) throws ZipException {
+        currZip = new ZipFile(file);
 		paths = new HashSet<>();
-		zip = new ZipFile(file);
-		parameters = new ZipParameters();
+        parameters = new ZipParameters();
+        parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+        parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+        parameters.setSourceExternalStream(true);
 	}
 
 	public NoticeTree importDocument() throws IOException, JSONException, ZipException {
@@ -60,10 +59,10 @@ public class ZipWithIndexFormat {
 	}
 
 	private String readFile(String path) throws IOException, ZipException {
-		FileHeader header = zip.getFileHeader(path);
+		FileHeader header = currZip.getFileHeader(path);
 		if (header == null)
 			return "";
-		return IOUtil.stringFromStream(zip.getInputStream(header));
+		return IOUtil.stringFromStream(currZip.getInputStream(header));
 	}
 
 	private NoticeTreeItem readNotices(String dir, JSONObject index) throws IOException, JSONException, ZipException {
@@ -95,22 +94,18 @@ public class ZipWithIndexFormat {
 		}
 	}
 
-	private void export(NoticeTreeItem notice) throws IOException, JSONException, ZipException {
-		parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-		parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
-		parameters.setSourceExternalStream(true);
-
-		JSONObject index = new JSONObject();
-		writeNoticesAndFillIndex("", notice, index);
-		storeFile(INDEX_JSON, index.toString());
-	}
-
 	public void export(NoticeTree tree) throws IOException, JSONException, ZipException {
-        if (zip.getFile().exists()) zip.getFile().delete();
-		export(tree.getRoot());
+        File tmp = File.createTempFile("treenote_", ".zip");
+        tmp.delete(); // delete for creating new empty ZipFile in tmp directory
+        tempZip = new ZipFile(tmp);
+        JSONObject index = new JSONObject();
+        writeNoticesAndFillIndex("", tree.getRoot(), index);
+        storeFile(INDEX_JSON, index.toString(), tempZip);
+        currZip.getFile().delete();
+        tempZip.getFile().renameTo(currZip.getFile());
 	}
 
-	private void storeFile(String path, String content) throws IOException, ZipException {
+	private void storeFile(String path, String content, ZipFile zip) throws IOException, ZipException {
 		InputStream stream = IOUtil.toStream(content);
 		parameters.setFileNameInZip(path);
         zip.addStream(stream, parameters);
@@ -120,20 +115,9 @@ public class ZipWithIndexFormat {
 	private void writeNoticesAndFillIndex(String dir, NoticeTreeItem item, JSONObject index) throws IOException, JSONException, ZipException {
 		final String title = item.getTitle();
 		final String dirPrefix = item.isBranch() ? BRANCH_PREFIX : NOTE_PREFIX;
-		String filename = IOUtil.sanitizeFilename(title);
 
-		String newDir = dir + dirPrefix + filename;
-		if (paths.contains(newDir)) {
-			// solve collision
-			int counter = 1;
-			String newFileName = filename;
-			while (paths.contains(newDir)) {
-				newFileName = String.format("%s_(%d)", filename, counter++);
-				newDir = dir + dirPrefix + newFileName;
-			}
-			filename = newFileName;
-		}
-		paths.add(newDir);
+		String filename = getUniqueName(dir + dirPrefix, IOUtil.sanitizeFilename(title));
+        String newDir = dir + dirPrefix + filename;
 
 		index.put(KEY_TITLE, title);
 		index.put(KEY_FILENAME, filename);
@@ -152,8 +136,29 @@ public class ZipWithIndexFormat {
 		} else {
 			// ../note_filename/filename.md
 			index.put(KEY_STATUS, item.getStatus());
-            index.put(KEY_ATTACHES, new JSONArray());
-			storeFile(newDir + "/" + filename + ".md", item.getContent());
+            index.put(KEY_ATTACHES, saveAttaches(item.getAttaches(), newDir));
+			storeFile(newDir + "/" + filename + ".md", item.getContent(), tempZip);
 		}
 	}
+
+    private JSONArray saveAttaches(List<Attached> attachedList, String path) throws JSONException {
+        JSONArray array = new JSONArray();
+        for (Attached attached : attachedList) {
+            JSONObject jsonAttach = new JSONObject();
+            jsonAttach.put(KEY_ATTACH_NAME, attached.getName());
+            jsonAttach.put(KEY_ATTACH_PATH, IOUtil.sanitizeFilename(attached.getPath()));
+            array.put(jsonAttach);
+        }
+        return array;
+    }
+
+    private String getUniqueName(String path, String prefName) {
+        int counter = 1;
+        while (paths.contains(path + prefName)) {
+            prefName = String.format("%s_(%d)", prefName, counter++);
+        }
+        paths.add(path + prefName);
+        return prefName;
+    }
+
 }

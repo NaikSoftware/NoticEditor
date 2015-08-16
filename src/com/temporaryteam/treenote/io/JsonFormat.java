@@ -44,9 +44,7 @@ public class JsonFormat {
 	public void export(NoticeTree tree) throws JSONException, IOException {
 		JSONObject json = new JSONObject();
 		treeToJson(tree.getRoot(), json);
-		if (file.exists()) {
-			file.delete();
-		}
+		file.delete();
 		IOUtil.writeJson(file, json);
 	}
 
