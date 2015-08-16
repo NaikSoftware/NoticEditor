@@ -100,17 +100,16 @@ public class ZipWithIndexFormat {
         tempZip = new ZipFile(tmp);
         JSONObject index = new JSONObject();
         writeNoticesAndFillIndex("", tree.getRoot(), index);
-        storeFile(INDEX_JSON, index.toString(), tempZip);
+        storeFile(INDEX_JSON, IOUtil.toStream(index.toString()), tempZip);
         currZip.getFile().delete();
         tempZip.getFile().renameTo(currZip.getFile());
 	}
 
-	private void storeFile(String path, String content, ZipFile zip) throws IOException, ZipException {
-		InputStream stream = IOUtil.toStream(content);
-		parameters.setFileNameInZip(path);
+    private void storeFile(String path, InputStream stream, ZipFile zip) throws IOException, ZipException {
+        parameters.setFileNameInZip(path);
         zip.addStream(stream, parameters);
-		stream.close();
-	}
+        stream.close();
+    }
 
 	private void writeNoticesAndFillIndex(String dir, NoticeTreeItem item, JSONObject index) throws IOException, JSONException, ZipException {
 		final String title = item.getTitle();
@@ -137,17 +136,30 @@ public class ZipWithIndexFormat {
 			// ../note_filename/filename.md
 			index.put(KEY_STATUS, item.getStatus());
             index.put(KEY_ATTACHES, saveAttaches(item.getAttaches(), newDir));
-			storeFile(newDir + "/" + filename + ".md", item.getContent(), tempZip);
+			storeFile(newDir + "/" + filename + ".md", IOUtil.toStream(item.getContent()), tempZip);
 		}
 	}
 
-    private JSONArray saveAttaches(List<Attached> attachedList, String path) throws JSONException {
+    private JSONArray saveAttaches(List<Attached> attachedList, String path) throws JSONException, ZipException, IOException {
         JSONArray array = new JSONArray();
         for (Attached attached : attachedList) {
             JSONObject jsonAttach = new JSONObject();
-            jsonAttach.put(KEY_ATTACH_NAME, attached.getName());
-            jsonAttach.put(KEY_ATTACH_PATH, IOUtil.sanitizeFilename(attached.getPath()));
-            array.put(jsonAttach);
+            InputStream inputStream = null;
+            switch (attached.getState()) {
+                case ATTACHED: // get from zip
+                    inputStream = currZip.getInputStream(currZip.getFileHeader(attached.getPath()));
+                    break;
+                case NEW: // get from filesystem
+                    inputStream = new FileInputStream(attached.getPath());
+                    break;
+            }
+            if (inputStream != null) {
+                String attachPath = path + "/" + getUniqueName(path, IOUtil.sanitizeFilename(attached.getName()));
+                jsonAttach.put(KEY_ATTACH_NAME, attached.getName());
+                jsonAttach.put(KEY_ATTACH_PATH, attachPath);
+                storeFile(attachPath, inputStream, tempZip);
+                array.put(jsonAttach);
+            }
         }
         return array;
     }
