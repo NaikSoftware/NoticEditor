@@ -26,7 +26,7 @@ import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.model.PreviewStyles;
 import com.temporaryteam.treenote.view.Chooser;
-import com.temporaryteam.treenote.view.EditNoticeTreeCell;
+import com.temporaryteam.treenote.view.EditableTreeCell;
 import com.temporaryteam.treenote.view.ImportHtmlDialog;
 import com.temporaryteam.treenote.view.SimpleAlert;
 import java.util.ResourceBundle;
@@ -116,8 +116,8 @@ public class MainController {
 		noticeTreeView.getSelectionModel().selectedItemProperty().addListener((observable, oldVal, newVal) -> {
             currentTreeItem = (NoticeTreeItem) newVal;
             open();
-		});
-		noticeTreeView.setCellFactory(treeView ->  new EditNoticeTreeCell());
+        });
+		noticeTreeView.setCellFactory(treeView ->  new EditableTreeCell());
 
 		noticeArea.textProperty().addListener((observable, oldVal, newVal) -> {
             engine.loadContent(processor.markdownToHtml(newVal));

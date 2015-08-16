@@ -11,7 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class EditNoticeTreeCell extends TreeCell<String> {
+public class EditableTreeCell extends TreeCell<String> {
 
 	private final Circle CIRCLE_AQUAMARINE = new Circle(5, Color.AQUAMARINE);
 	private final Circle CIRCLE_YELLOW = new Circle(5, Color.YELLOW);
@@ -39,7 +39,7 @@ public class EditNoticeTreeCell extends TreeCell<String> {
 	@Override
 	public void commitEdit(String str) {
 		super.commitEdit(str);
-		getNoticeTreeItem().setTitle(str);
+		getModel().setTitle(str);
 	}
 
 	@Override
@@ -62,35 +62,35 @@ public class EditNoticeTreeCell extends TreeCell<String> {
 		}
 	}
 
-	private NoticeTreeItem getNoticeTreeItem() {
-		return (NoticeTreeItem) getTreeItem();
-	}
-
 	private void createTextField() {
 		noticeName = new TextField(getString());
 		noticeName.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent t) {
-				if (t.getCode() == KeyCode.ENTER) {
-					commitEdit(noticeName.getText());
-				} else if (t.getCode() == KeyCode.ESCAPE) {
-					cancelEdit();
-				}
-			}
-		});
+            @Override
+            public void handle(KeyEvent t) {
+                if (t.getCode() == KeyCode.ENTER) {
+                    commitEdit(noticeName.getText());
+                } else if (t.getCode() == KeyCode.ESCAPE) {
+                    cancelEdit();
+                }
+            }
+        });
 	}
 
 	private Node getIcon() {
-		if (getNoticeTreeItem().isBranch()) {
+		if (getModel().isBranch()) {
 			return null;
 		}
-		switch (getNoticeTreeItem().getStatus()) {
+		switch (getModel().getStatus()) {
 			case NoticeTreeItem.STATUS_IMPORTANT:
 				return CIRCLE_YELLOW;
 			default:
 				return CIRCLE_AQUAMARINE;
 		}
 	}
+
+    private NoticeTreeItem getModel() {
+        return (NoticeTreeItem) getTreeItem();
+    }
 	
 	/**
 	 *

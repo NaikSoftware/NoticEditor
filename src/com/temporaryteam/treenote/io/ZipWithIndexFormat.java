@@ -9,7 +9,6 @@ import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.TreeItem;
 import net.lingala.zip4j.core.ZipFile;
@@ -107,40 +106,15 @@ public class ZipWithIndexFormat {
 	}
 
 	public void export(NoticeTree tree) throws IOException, JSONException, ZipException {
+        if (zip.getFile().exists()) zip.getFile().delete();
 		export(tree.getRoot());
 	}
 
-	private void storeFile(String path, String content) throws IOException {
-		Exception lastEx = null;
-		for (int attempt = 0; attempt < 100; attempt++) {
-			InputStream stream = null;
-			try {
-				if (zip.isValidZipFile() && zip.getFileHeader(path) != null) {
-					zip.removeFile(path);
-				}
-				parameters.setFileNameInZip(path);
-				stream = IOUtil.toStream(content);
-				zip.addStream(stream, parameters);
-				return;
-			} catch (ZipException | IOException ex) {
-				try {
-					lastEx = ex;
-					logger.log(Level.WARNING, "Error in storeFile, attempt=" + attempt, ex);
-					Thread.sleep(200);
-				} catch (InterruptedException ex1) {
-					logger.log(Level.SEVERE, null, ex1);
-				}
-			} finally {
-				if (stream != null) {
-					try {
-						stream.close();
-					} catch (IOException ex) {
-						logger.log(Level.SEVERE, "Close stream error", ex);
-					}
-				}
-			}
-		}
-		throw new IOException(lastEx);
+	private void storeFile(String path, String content) throws IOException, ZipException {
+		InputStream stream = IOUtil.toStream(content);
+		parameters.setFileNameInZip(path);
+        zip.addStream(stream, parameters);
+		stream.close();
 	}
 
 	private void writeNoticesAndFillIndex(String dir, NoticeTreeItem item, JSONObject index) throws IOException, JSONException, ZipException {
