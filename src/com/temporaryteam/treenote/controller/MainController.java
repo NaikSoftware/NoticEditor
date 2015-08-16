@@ -73,6 +73,9 @@ public class MainController {
 	private SplitPane mainPane;
 
 	@FXML
+	private CheckMenuItem hideEditorMenuItem;
+
+	@FXML
 	private ResourceBundle resources; // magic!
 
 	private final Stage primaryStage;
@@ -131,6 +134,11 @@ public class MainController {
             }
 		});
 		noticeArea.wrapTextProperty().bind(wordWrapItem.selectedProperty());
+
+		hideEditorMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            editorPanel.getDividers().get(0).setPosition(newValue ? 0 : 0.5);
+		});
+
 		rebuildTree(tr("help_msg"));
 	}
 
