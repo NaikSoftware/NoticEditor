@@ -1,13 +1,8 @@
 package com.temporaryteam.treenote.io;
 
-import static com.temporaryteam.treenote.io.JsonFields.*;
 import com.temporaryteam.treenote.model.Attached;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
-import java.io.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javafx.scene.control.TreeItem;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -17,6 +12,16 @@ import net.lingala.zip4j.util.Zip4jConstants;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static com.temporaryteam.treenote.io.JsonFields.*;
 
 /**
  * Document format that stores to zip archive with index.json.
@@ -133,8 +138,8 @@ public class ZipWithIndexFormat {
             index.put(KEY_CHILDS, jsonArray);
         } else {
             // ../note_filename/filename.md
-			String noticePath = newDir + getUniqueName(newDir, "/" + filename + ".md");
-			storeFile(noticePath, IOUtil.toStream(item.getContent()), tempZip);
+            String noticePath = newDir + getUniqueName(newDir, "/" + filename + ".md");
+            storeFile(noticePath, IOUtil.toStream(item.getContent()), tempZip);
             index.put(KEY_STATUS, item.getStatus());
             index.put(KEY_ATTACHES, saveAttaches(item.getAttaches(), newDir));
         }
@@ -155,10 +160,10 @@ public class ZipWithIndexFormat {
             }
             if (inputStream != null) {
                 String attachPath = path + "/" + getUniqueName(path, IOUtil.sanitizeFilename(attached.getName()));
-				if (attached.getState() == Attached.State.NEW) {
-					attached.newPath(attachPath); // set new path (after saving can be changed)
-					attached.changeState(Attached.State.ATTACHED);
-				}
+                if (attached.getState() == Attached.State.NEW) {
+                    attached.newPath(attachPath); // set new path (after saving changes)
+                    attached.changeState(Attached.State.ATTACHED);
+                }
                 jsonAttach.put(KEY_ATTACH_NAME, attached.getName());
                 jsonAttach.put(KEY_ATTACH_PATH, attachPath);
                 storeFile(attachPath, inputStream, tempZip);

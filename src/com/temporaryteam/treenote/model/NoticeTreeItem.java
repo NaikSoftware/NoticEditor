@@ -21,8 +21,12 @@ public class NoticeTreeItem extends TreeItem<String> {
     private ObservableList<TreeItem<String>> childs;
     private String content;
     private int status;
-    private final ObservableList<Attached> attaches = FXCollections.observableArrayList(state -> new Observable[]{state.statProperty()});
-    private final FilteredList<Attached> filteredAttaches = attaches.filtered(attached -> attached.getState() != Attached.State.REMOVED);
+
+    private final ObservableList<Attached> attaches = FXCollections.observableArrayList(
+            attached -> new Observable[]{attached.stateProperty()});
+
+    private final FilteredList<Attached> filteredAttaches = attaches.filtered(
+            attached -> attached.getState() != Attached.State.REMOVED);
 
     /**
      * Create branch node on tree.

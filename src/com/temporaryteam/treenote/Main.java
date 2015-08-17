@@ -2,14 +2,13 @@ package com.temporaryteam.treenote;
 
 import com.temporaryteam.treenote.controller.MainController;
 import com.temporaryteam.treenote.controller.NoticeSettingsController;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class Main extends Application {
 

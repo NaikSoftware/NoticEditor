@@ -21,12 +21,12 @@ public class Attached {
     public Attached(State state, String path, String name) {
         this.path = path;
         this.name = name;
-		changeState(state);
+        changeState(state);
     }
-	
-	public ObjectProperty<State> statProperty() {
-		return stateProperty;
-	}
+
+    public ObjectProperty<State> stateProperty() {
+        return stateProperty;
+    }
 
     public State getState() {
         return stateProperty.get();
@@ -35,10 +35,10 @@ public class Attached {
     public final void changeState(State state) {
         stateProperty.set(state);
     }
-	
-	public void newPath(String path) {
-		this.path = path;
-	}
+
+    public void newPath(String path) {
+        this.path = path;
+    }
 
     public String getPath() {
         return path;

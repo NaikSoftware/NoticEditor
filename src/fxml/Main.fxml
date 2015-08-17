@@ -1,107 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.web.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-
-<VBox maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.MainController">
+<?import javafx.scene.web.WebView?>
+<VBox maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.MainController">
     <children>
         <MenuBar>
             <menus>
                 <Menu mnemonicParsing="false" text="%file">
                     <items>
-                        <MenuItem onAction="#handleNew" text="%new" />
-                        <MenuItem onAction="#handleOpen" text="%open" />
-                        <MenuItem onAction="#handleSave" text="%save" />
-                        <MenuItem onAction="#handleSaveAs" text="%save_as" />
+                        <MenuItem onAction="#handleNew" text="%new"/>
+                        <MenuItem onAction="#handleOpen" text="%open"/>
+                        <MenuItem onAction="#handleSave" text="%save"/>
+                        <MenuItem onAction="#handleSaveAs" text="%save_as"/>
                         <Menu text="%export_to">
-                            <MenuItem onAction="#handleExportHtml" text="HTML" />
+                            <MenuItem onAction="#handleExportHtml" text="HTML"/>
                         </Menu>
                         <Menu text="%import_from">
-                            <MenuItem onAction="#handleImportFromWeb" text="Web" />
+                            <MenuItem onAction="#handleImportFromWeb" text="Web"/>
                         </Menu>
-                        <MenuItem onAction="#handleExit" text="%exit" />
+                        <MenuItem onAction="#handleExit" text="%exit"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="%view">
                     <items>
-                        <CheckMenuItem fx:id="hideEditorMenuItem" text="%hide_editor" />
-                        <MenuItem onAction="#handleSwitchOrientation" text="%switch_orientation" />
-                        <CheckMenuItem fx:id="wordWrapItem" text="%word_wrap" />
-                        <Menu fx:id="previewStyleMenu" text="%style" />
+                        <CheckMenuItem fx:id="hideEditorMenuItem" text="%hide_editor"/>
+                        <MenuItem onAction="#handleSwitchOrientation" text="%switch_orientation"/>
+                        <CheckMenuItem fx:id="wordWrapItem" text="%word_wrap"/>
+                        <Menu fx:id="previewStyleMenu" text="%style"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="%help">
                     <items>
-                        <MenuItem onAction="#handleAbout" text="%about" />
+                        <MenuItem onAction="#handleAbout" text="%about"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
         <VBox maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS" maxWidth="1.7976931348623157E308">
             <children>
-                <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0" visible="false" /> 
-                <SplitPane fx:id="mainPane" dividerPositions="0.35" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0" visible="false"/>
+                <SplitPane fx:id="mainPane" dividerPositions="0.35" maxHeight="1.7976931348623157E308"
+                           maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <items>
-                        <SplitPane dividerPositions="0.75" maxHeight="1.7976931348623157E308" orientation="VERTICAL" SplitPane.resizableWithParent="false">
+                        <SplitPane dividerPositions="0.75" maxHeight="1.7976931348623157E308" orientation="VERTICAL"
+                                   SplitPane.resizableWithParent="false">
                             <items>
                                 <GridPane>
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" vgrow="NEVER" />
-                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="100.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0"
+                                                        vgrow="NEVER"/>
+                                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="100.0"
+                                                        vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
-                                        <TreeView fx:id="noticeTreeView" editable="true" maxHeight="1.7976931348623157E308" prefWidth="200.0" showRoot="false" GridPane.rowIndex="1">
+                                        <TreeView fx:id="noticeTreeView" editable="true"
+                                                  maxHeight="1.7976931348623157E308" prefWidth="200.0" showRoot="false"
+                                                  GridPane.rowIndex="1">
                                             <contextMenu>
                                                 <ContextMenu>
                                                     <items>
-                                                        <MenuItem fx:id="addBranchItem" onAction="#handleContextMenu" text="%add_branch" />
-                                                        <MenuItem fx:id="addNoticeItem" onAction="#handleContextMenu" text="%add_notice" />
-                                                        <MenuItem fx:id="deleteItem" onAction="#handleContextMenu" text="%remove" />
+                                                        <MenuItem fx:id="addBranchItem" onAction="#handleContextMenu"
+                                                                  text="%add_branch"/>
+                                                        <MenuItem fx:id="addNoticeItem" onAction="#handleContextMenu"
+                                                                  text="%add_notice"/>
+                                                        <MenuItem fx:id="deleteItem" onAction="#handleContextMenu"
+                                                                  text="%remove"/>
                                                     </items>
                                                 </ContextMenu>
                                             </contextMenu>
                                         </TreeView>
                                         <GridPane>
                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                                             </columnConstraints>
                                             <rowConstraints>
-                                                <RowConstraints minHeight="35.0" vgrow="NEVER" />
+                                                <RowConstraints minHeight="35.0" vgrow="NEVER"/>
                                             </rowConstraints>
                                             <children>
-                                                <SplitMenuButton mnemonicParsing="false" text="%add_notice" onAction="#handleAddNotice" >
+                                                <SplitMenuButton mnemonicParsing="false" text="%add_notice"
+                                                                 onAction="#handleAddNotice">
                                                     <GridPane.margin>
-                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                     </GridPane.margin>
                                                     <items>
-                                                        <MenuItem mnemonicParsing="false" text="%add_branch" onAction="#handleAddBranch" />
+                                                        <MenuItem mnemonicParsing="false" text="%add_branch"
+                                                                  onAction="#handleAddBranch"/>
                                                     </items>
                                                 </SplitMenuButton>
-                                                <Button prefWidth="100.0" GridPane.columnIndex="1" text="%remove" GridPane.halignment="RIGHT" onAction="#handleRemoveItem"  >
+                                                <Button prefWidth="100.0" GridPane.columnIndex="1" text="%remove"
+                                                        GridPane.halignment="RIGHT" onAction="#handleRemoveItem">
                                                     <GridPane.margin>
-                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                     </GridPane.margin>
                                                 </Button>
                                             </children>
                                         </GridPane>
                                     </children>
                                 </GridPane>
-                                <fx:include fx:id="noticeSettings" source="NoticeSettings.fxml" />
+                                <fx:include fx:id="noticeSettings" source="NoticeSettings.fxml"/>
                             </items>
                         </SplitPane>
-                        <SplitPane fx:id="editorPanel" dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="400.0">
+                        <SplitPane fx:id="editorPanel" dividerPositions="0.5" maxHeight="1.7976931348623157E308"
+                                   maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="400.0">
                             <items>
-                                <TextArea fx:id="noticeArea" minWidth="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="310.0" />
-                                <WebView fx:id="viewer" minHeight="-1.0" minWidth="-1.0" prefHeight="400.0" prefWidth="310.0" />
+                                <TextArea fx:id="noticeArea" minWidth="0.0" maxHeight="1.7976931348623157E308"
+                                          maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="310.0"/>
+                                <WebView fx:id="viewer" minHeight="-1.0" minWidth="-1.0" prefHeight="400.0"
+                                         prefWidth="310.0"/>
                             </items>
                         </SplitPane>
                     </items>
