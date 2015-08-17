@@ -1,5 +1,6 @@
 package com.temporaryteam.treenote.view;
 
+import com.temporaryteam.treenote.Context;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -83,7 +84,8 @@ public final class Chooser {
         return this;
     }
 
-    public File show(Window window) {
+    public File show() {
+        Window window = Context.getPrimaryStage();
         // Set initial directory from last session
         if (lastDirectory != null && lastDirectory.isDirectory() && lastDirectory.exists()) {
             if (fileChooseMode) {

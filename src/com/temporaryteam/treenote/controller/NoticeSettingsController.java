@@ -35,12 +35,7 @@ public class NoticeSettingsController implements Initializable {
 
     private MainController mainController;
     private ResourceBundle res;
-    private final Stage stage;
     private final ObservableList emptyList = FXCollections.emptyObservableList();
-
-    public NoticeSettingsController(Stage stage) {
-        this.stage = stage;
-    }
 
     /**
      * Initializes the controller class.
@@ -94,7 +89,7 @@ public class NoticeSettingsController implements Initializable {
 
     @FXML
     private void handleSelectAttach(ActionEvent event) {
-        File file = Chooser.file().filter(Chooser.ALL).title(tr("select_file")).open().show(stage);
+        File file = Chooser.file().filter(Chooser.ALL).title(tr("select_file")).open().show();
         if (file == null) {
             return;
         }

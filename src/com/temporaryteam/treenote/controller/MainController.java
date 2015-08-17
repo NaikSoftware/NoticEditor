@@ -1,5 +1,6 @@
 package com.temporaryteam.treenote.controller;
 
+import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.importer.WebImporter;
 import com.temporaryteam.treenote.io.DocumentFormat;
 import com.temporaryteam.treenote.io.ExportException;
@@ -16,13 +17,10 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 import org.json.JSONException;
 import org.pegdown.PegDownProcessor;
 
@@ -59,23 +57,18 @@ public class MainController {
     @FXML
     private ResourceBundle resources; // magic!
 
-    private final Stage primaryStage;
     private WebEngine engine;
-    private final PegDownProcessor processor;
+    private PegDownProcessor processor;
     private NoticeTree noticeTree;
     private NoticeTreeItem currentTreeItem;
     private File fileSaved;
-
-    public MainController(Stage stage) {
-        this.primaryStage = stage;
-        processor = new PegDownProcessor(AUTOLINKS | TABLES | FENCED_CODE_BLOCKS);
-    }
 
     /**
      * Initializes the controller class.
      */
     @FXML
     private void initialize() {
+        processor = new PegDownProcessor(AUTOLINKS | TABLES | FENCED_CODE_BLOCKS);
         noticeSettingsController.setMainController(this);
         engine = viewer.getEngine();
         progressBar.managedProperty().bind(progressBar.visibleProperty()); // for hide progress bar
@@ -189,7 +182,7 @@ public class MainController {
             fileSaved = Chooser.file().open()
                     .filter(Chooser.SUPPORTED, Chooser.ALL)
                     .title("Open notice")
-                    .show(primaryStage);
+                    .show();
             if (fileSaved == null) {
                 return;
             }
@@ -199,7 +192,7 @@ public class MainController {
             currentTreeItem = null;
             open();
         } catch (IOException | JSONException e) {
-            new SimpleAlert(e, tr("open_error"), primaryStage).showAndWait();
+            SimpleAlert.error(tr("open_error"), e);
         }
     }
 
@@ -217,7 +210,7 @@ public class MainController {
         fileSaved = Chooser.file().save()
                 .filter(Chooser.ZIP, Chooser.JSON)
                 .title("Save notice")
-                .show(primaryStage);
+                .show();
         if (fileSaved == null)
             return;
 
@@ -236,9 +229,9 @@ public class MainController {
         DocumentFormat.save(file, noticeTree, strategy, (error) -> {
             toggleWaiting(false);
             if (error == null) {
-                new SimpleAlert(tr("saved"), primaryStage).showAndWait();
+                SimpleAlert.info(tr("saved"));
             } else {
-                new SimpleAlert(error, tr("save_error"), primaryStage).showAndWait();
+                SimpleAlert.error(tr("save_error"), error);
             }
             return null;
         });
@@ -248,7 +241,7 @@ public class MainController {
     private void handleExportHtml(ActionEvent event) {
         File destDir = Chooser.directory()
                 .title("Select directory to save HTML files")
-                .show(primaryStage);
+                .show();
         if (destDir == null)
             return;
 
@@ -256,9 +249,9 @@ public class MainController {
         try {
             ExportStrategyHolder.HTML.setProcessor(processor);
             ExportStrategyHolder.HTML.export(destDir, noticeTree);
-            new SimpleAlert(tr("export_success"), primaryStage).showAndWait();
+            SimpleAlert.info(tr("export_success"));
         } catch (ExportException e) {
-            new SimpleAlert(e, tr("save_error"), primaryStage).showAndWait();
+            SimpleAlert.error(tr("save_error"), e);
         }
         toggleWaiting(false);
     }
@@ -266,16 +259,16 @@ public class MainController {
     @FXML
     private void handleImportFromWeb(ActionEvent event) {
         if (currentTreeItem == null || currentTreeItem.isBranch()) {
-            new SimpleAlert(tr("select_notice"), primaryStage).showAndWait();
+            SimpleAlert.info(tr("select_notice"));
             return;
         }
-        ImportHtmlDialog dialog = new ImportHtmlDialog(primaryStage, tr("input_url"), resources);
+        ImportHtmlDialog dialog = new ImportHtmlDialog(tr("input_url"), resources);
         dialog.showAndWait().ifPresent((url) -> {
             toggleWaiting(true);
             WebImporter.from(url).mode(dialog.getSelectedMode()).grab((result) -> {
                 toggleWaiting(false);
                 if (result instanceof Exception) {
-                    new SimpleAlert((Exception) result, tr("loading_error"), primaryStage).showAndWait();
+                    SimpleAlert.error(tr("loading_error"), (Exception) result);
                 } else {
                     noticeArea.setText(result.toString());
                 }
@@ -297,15 +290,7 @@ public class MainController {
 
     @FXML
     private void handleAbout(ActionEvent event) {
-        try {
-            Stage stage = new Stage();
-            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/InfoFrame.fxml"), resources));
-            stage.setScene(scene);
-            stage.initOwner(primaryStage);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Context.loadToNewStage("InfoFrame").showAndWait();
     }
 
     public NoticeTreeItem getCurrentNotice() {

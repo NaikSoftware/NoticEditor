@@ -1,10 +1,10 @@
 package com.temporaryteam.treenote.view;
 
+import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.controller.ImportHtmlController;
 import com.temporaryteam.treenote.importer.WebImporter;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextInputDialog;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -16,13 +16,13 @@ public class ImportHtmlDialog extends TextInputDialog {
 
     private ImportHtmlController controller;
 
-    public ImportHtmlDialog(Stage stage, String header, ResourceBundle res) {
+    public ImportHtmlDialog(String header, ResourceBundle res) {
         super("http://");
-        initOwner(stage);
+        initOwner(Context.getPrimaryStage());
         setHeaderText(header);
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ImportHtmlDialog.fxml"), res);
+            FXMLLoader loader = new FXMLLoader(Context.getFXML("ImportHtmlDialog"), res);
             getDialogPane().setExpandableContent(loader.load());
             getDialogPane().setExpanded(true);
             controller = loader.getController();

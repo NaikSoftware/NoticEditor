@@ -1,11 +1,10 @@
 package com.temporaryteam.treenote.view;
 
+import com.temporaryteam.treenote.Context;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.stage.Stage;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -15,38 +14,51 @@ import java.io.StringWriter;
  */
 public class SimpleAlert extends Alert {
 
-    public SimpleAlert(String headerText, Stage owner) {
-        super(AlertType.INFORMATION);
-        initOwner(owner);
-        setHeaderText(headerText);
+    private static SimpleAlert simpleAlert;
+
+    public static void info(String header) {
+        SimpleAlert alert = getInstance();
+        alert.setAlertType(AlertType.INFORMATION);
+        alert.setHeaderText(header);
+        alert.getDialogPane().setExpandableContent(null);
+        alert.showAndWait();
     }
 
-    public SimpleAlert(Exception ex, String headerText, Stage owner) {
-        super(AlertType.ERROR);
-        initOwner(owner);
-        setHeaderText(headerText);
+    public static void error(String header, Exception exception) {
+        SimpleAlert alert = getInstance();
+        alert.setAlertType(AlertType.ERROR);
+        alert.setHeaderText(header);
 
+        alert.getDialogPane().setExpandableContent(alert.expContent);
         StringWriter sw = new StringWriter();
-        ex.printStackTrace(new PrintWriter(sw));
-        String exceptionText = sw.toString();
+        exception.printStackTrace(new PrintWriter(sw));
+        alert.errorTextArea.setText(sw.toString());
+        alert.showAndWait();
+    }
 
-        Label label = new Label("Stacktrace:");
+    private static SimpleAlert getInstance() {
+        if (simpleAlert == null) simpleAlert = new SimpleAlert();
+        return simpleAlert;
+    }
 
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        //textArea.setWrapText(true);
+    public final TextArea errorTextArea;
+    public final GridPane expContent;
 
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
+    public SimpleAlert() {
+        super(AlertType.NONE);
+        initOwner(Context.getPrimaryStage());
 
-        GridPane expContent = new GridPane();
+        errorTextArea = new TextArea();
+        errorTextArea.setEditable(false);
+
+        errorTextArea.setMaxWidth(Double.MAX_VALUE);
+        errorTextArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(errorTextArea, Priority.ALWAYS);
+        GridPane.setHgrow(errorTextArea, Priority.ALWAYS);
+
+        expContent = new GridPane();
         expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
-
-        getDialogPane().setExpandableContent(expContent);
+        expContent.add(errorTextArea, 0, 1);
     }
 
 }
