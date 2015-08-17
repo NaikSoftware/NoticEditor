@@ -12,7 +12,7 @@
       minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label text="TreeNote">
+        <Label text="TreeNote Project (version 1.0)">
             <font>
                 <Font size="34.0"/>
             </font>
