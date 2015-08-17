@@ -1,5 +1,6 @@
 package com.temporaryteam.treenote.model;
 
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -20,7 +21,7 @@ public class NoticeTreeItem extends TreeItem<String> {
     private ObservableList<TreeItem<String>> childs;
     private String content;
     private int status;
-    private final ObservableList<Attached> attaches = FXCollections.observableArrayList();
+    private final ObservableList<Attached> attaches = FXCollections.observableArrayList(state -> new Observable[]{state.statProperty()});
     private final FilteredList<Attached> filteredAttaches = attaches.filtered(attached -> attached.getState() != Attached.State.REMOVED);
 
     /**

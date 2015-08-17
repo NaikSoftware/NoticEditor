@@ -1,16 +1,13 @@
 package com.temporaryteam.treenote.io;
 
 import static com.temporaryteam.treenote.io.JsonFields.*;
-
 import com.temporaryteam.treenote.model.Attached;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
-
 import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javafx.scene.control.TreeItem;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -136,9 +133,10 @@ public class ZipWithIndexFormat {
             index.put(KEY_CHILDS, jsonArray);
         } else {
             // ../note_filename/filename.md
+			String noticePath = newDir + getUniqueName(newDir, "/" + filename + ".md");
+			storeFile(noticePath, IOUtil.toStream(item.getContent()), tempZip);
             index.put(KEY_STATUS, item.getStatus());
             index.put(KEY_ATTACHES, saveAttaches(item.getAttaches(), newDir));
-            storeFile(newDir + "/" + filename + ".md", IOUtil.toStream(item.getContent()), tempZip);
         }
     }
 
@@ -157,6 +155,10 @@ public class ZipWithIndexFormat {
             }
             if (inputStream != null) {
                 String attachPath = path + "/" + getUniqueName(path, IOUtil.sanitizeFilename(attached.getName()));
+				if (attached.getState() == Attached.State.NEW) {
+					attached.newPath(attachPath); // set new path (after saving can be changed)
+					attached.changeState(Attached.State.ATTACHED);
+				}
                 jsonAttach.put(KEY_ATTACH_NAME, attached.getName());
                 jsonAttach.put(KEY_ATTACH_PATH, attachPath);
                 storeFile(attachPath, inputStream, tempZip);

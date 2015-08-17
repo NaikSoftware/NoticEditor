@@ -1,5 +1,8 @@
 package com.temporaryteam.treenote.model;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+
 /**
  * Represent attached file in notice.
  *
@@ -11,24 +14,31 @@ public class Attached {
         NEW, ATTACHED, REMOVED
     }
 
-    private State state;
-    private final String path;
+    private final ObjectProperty<State> stateProperty = new SimpleObjectProperty<>();
+    private String path;
     private final String name;
 
     public Attached(State state, String path, String name) {
-        this.state = state;
         this.path = path;
         this.name = name;
+		changeState(state);
     }
+	
+	public ObjectProperty<State> statProperty() {
+		return stateProperty;
+	}
 
     public State getState() {
-        return state;
+        return stateProperty.get();
     }
 
-    public void changeState(State state) {
-        this.state = state;
-        // Generate some event for update filtered list?
+    public final void changeState(State state) {
+        stateProperty.set(state);
     }
+	
+	public void newPath(String path) {
+		this.path = path;
+	}
 
     public String getPath() {
         return path;
