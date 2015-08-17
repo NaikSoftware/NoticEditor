@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Hold primary stage and resource bundle.
+ * Holds primary stage and resource bundle.
  * Used for loading windows from FXML.
  *
  * @author Naik
