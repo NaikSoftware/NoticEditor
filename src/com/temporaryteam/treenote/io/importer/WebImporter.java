@@ -1,4 +1,4 @@
-package com.temporaryteam.treenote.importer;
+package com.temporaryteam.treenote.io.importer;
 
 import javafx.application.Platform;
 import javafx.util.Callback;

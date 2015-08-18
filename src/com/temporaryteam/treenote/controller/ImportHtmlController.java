@@ -1,6 +1,6 @@
 package com.temporaryteam.treenote.controller;
 
-import com.temporaryteam.treenote.importer.WebImporter;
+import com.temporaryteam.treenote.io.importer.WebImporter;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

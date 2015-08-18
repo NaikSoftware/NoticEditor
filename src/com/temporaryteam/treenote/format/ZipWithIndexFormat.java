@@ -1,8 +1,12 @@
-package com.temporaryteam.treenote.io;
+package com.temporaryteam.treenote.format;
 
+import com.temporaryteam.treenote.Context;
+import com.temporaryteam.treenote.io.IOUtil;
 import com.temporaryteam.treenote.model.Attached;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
+import com.temporaryteam.treenote.view.InputPasswordDialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeItem;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -21,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.temporaryteam.treenote.io.JsonFields.*;
+import static com.temporaryteam.treenote.format.JsonFields.*;
 
 /**
  * Document format that stores to zip archive with index.json.
@@ -35,8 +39,14 @@ public class ZipWithIndexFormat {
     private static final String BRANCH_PREFIX = "branch_";
     private static final String NOTE_PREFIX = "note_";
 
+    private static final InputPasswordDialog inputPassDialog = new InputPasswordDialog();
+
     public static ZipWithIndexFormat with(File file) throws ZipException {
         return new ZipWithIndexFormat(file);
+    }
+
+    public static ZipWithIndexFormat with(File file, String password) throws ZipException {
+        return new ZipWithIndexFormat(file, password);
     }
 
     private final Set<String> paths;
@@ -51,6 +61,21 @@ public class ZipWithIndexFormat {
         parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
         parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
         parameters.setSourceExternalStream(true);
+        if (currZip.isValidZipFile() && currZip.isEncrypted()) {
+
+        }
+    }
+
+    private ZipWithIndexFormat(File file, String password) throws ZipException {
+        this(file);
+        setupEncryption(password);
+    }
+
+    private void setupEncryption(String password) {
+        parameters.setEncryptFiles(true);
+        parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
+        parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+        parameters.setPassword(password);
     }
 
     public NoticeTree importDocument() throws IOException, JSONException, ZipException {
@@ -98,7 +123,7 @@ public class ZipWithIndexFormat {
         }
     }
 
-    public void export(NoticeTree tree) throws IOException, JSONException, ZipException {
+    public void save(NoticeTree tree) throws IOException, JSONException, ZipException {
         File tmp = File.createTempFile("treenote_", ".zip");
         tmp.delete(); // delete for creating new empty ZipFile in tmp directory
         tempZip = new ZipFile(tmp);

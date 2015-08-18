@@ -34,6 +34,10 @@ public class Context {
         return primaryStage;
     }
 
+    public static ResourceBundle getResources() {
+        return resources;
+    }
+
     public static Parent loadLayout(String layout_name) {
         try {
             return FXMLLoader.load(getFXML(layout_name), resources);
@@ -53,14 +57,18 @@ public class Context {
         return loadToStage(layout_name, primaryStage);
     }
 
-    private static Stage loadToStage(String layout_name, Stage stage) {
-        Scene scene = new Scene(loadLayout(layout_name));
-        stage.setScene(scene);
-        return stage;
+    public static FXMLLoader makeLoader(String layout_name) {
+        return new FXMLLoader(getFXML(layout_name), resources);
     }
 
     public static URL getFXML(String layout_name) {
         return Context.class.getResource(FXML_DIR + layout_name + EXT);
+    }
+
+    private static Stage loadToStage(String layout_name, Stage stage) {
+        Scene scene = new Scene(loadLayout(layout_name));
+        stage.setScene(scene);
+        return stage;
     }
 
 }

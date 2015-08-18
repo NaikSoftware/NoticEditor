@@ -1,11 +1,12 @@
 package com.temporaryteam.treenote.controller;
 
 import com.temporaryteam.treenote.Context;
-import com.temporaryteam.treenote.importer.WebImporter;
-import com.temporaryteam.treenote.io.DocumentFormat;
-import com.temporaryteam.treenote.io.ExportException;
-import com.temporaryteam.treenote.io.ExportStrategy;
-import com.temporaryteam.treenote.io.ExportStrategyHolder;
+import com.temporaryteam.treenote.format.AutoFormat;
+import com.temporaryteam.treenote.io.export.Exporter;
+import com.temporaryteam.treenote.io.export.HtmlExporter;
+import com.temporaryteam.treenote.io.export.JsonExporter;
+import com.temporaryteam.treenote.io.export.ZipExporter;
+import com.temporaryteam.treenote.io.importer.WebImporter;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.model.PreviewStyles;
@@ -189,7 +190,7 @@ public class MainController {
                 return;
             }
 
-            noticeTree = DocumentFormat.open(fileSaved);
+            noticeTree = AutoFormat.open(fileSaved);
             noticeTreeView.setRoot(noticeTree.getRoot());
             currentTreeItem = null;
             open();
@@ -220,23 +221,12 @@ public class MainController {
     }
 
     private void saveDocument(File file) {
-        ExportStrategy strategy;
         if (Chooser.JSON.equals(Chooser.getLastSelectedExtensionFilter())
                 || file.getName().toLowerCase().endsWith(".json")) {
-            strategy = ExportStrategyHolder.JSON;
+            processExport(new JsonExporter(file, noticeTree));
         } else {
-            strategy = ExportStrategyHolder.ZIP;
+            processExport(new ZipExporter(file, noticeTree));
         }
-        toggleWaiting(true);
-        DocumentFormat.save(file, noticeTree, strategy, (error) -> {
-            toggleWaiting(false);
-            if (error == null) {
-                SimpleAlert.info(tr("saved"));
-            } else {
-                SimpleAlert.error(tr("save_error"), error);
-            }
-            return null;
-        });
     }
 
     @FXML
@@ -244,18 +234,8 @@ public class MainController {
         File destDir = Chooser.directory()
                 .title("Select directory to save HTML files")
                 .show();
-        if (destDir == null)
-            return;
-
-        toggleWaiting(true);
-        try {
-            ExportStrategyHolder.HTML.setProcessor(processor);
-            ExportStrategyHolder.HTML.export(destDir, noticeTree);
-            SimpleAlert.info(tr("export_success"));
-        } catch (ExportException e) {
-            SimpleAlert.error(tr("save_error"), e);
-        }
-        toggleWaiting(false);
+        if (destDir == null) return;
+        processExport(new HtmlExporter(destDir, noticeTree, processor));
     }
 
     @FXML
@@ -264,7 +244,7 @@ public class MainController {
             SimpleAlert.info(tr("select_notice"));
             return;
         }
-        ImportHtmlDialog dialog = new ImportHtmlDialog(tr("input_url"), resources);
+        ImportHtmlDialog dialog = new ImportHtmlDialog(tr("input_url"));
         dialog.showAndWait().ifPresent((url) -> {
             toggleWaiting(true);
             WebImporter.from(url).mode(dialog.getSelectedMode()).grab((result) -> {
@@ -276,6 +256,19 @@ public class MainController {
                 }
                 return null;
             });
+        });
+    }
+
+    private void processExport(Exporter exporter) {
+        toggleWaiting(true);
+        exporter.export(error -> {
+            toggleWaiting(false);
+            if (error == null) {
+                SimpleAlert.info(tr("saved"));
+            } else {
+                SimpleAlert.error(tr("save_error"), error);
+            }
+            return null;
         });
     }
 

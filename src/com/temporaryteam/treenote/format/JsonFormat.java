@@ -1,5 +1,6 @@
-package com.temporaryteam.treenote.io;
+package com.temporaryteam.treenote.format;
 
+import com.temporaryteam.treenote.io.IOUtil;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import javafx.scene.control.TreeItem;
@@ -10,7 +11,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 
-import static com.temporaryteam.treenote.io.JsonFields.*;
+import static com.temporaryteam.treenote.format.JsonFields.*;
 
 /**
  * @author Naik
@@ -35,14 +36,16 @@ public class JsonFormat {
     private NoticeTreeItem jsonToTree(JSONObject json) throws JSONException {
         NoticeTreeItem item = new NoticeTreeItem(json.getString(KEY_TITLE), json.optString(KEY_CONTENT, null),
                 json.optInt(KEY_STATUS, NoticeTreeItem.STATUS_NORMAL));
-        JSONArray arr = json.getJSONArray(KEY_CHILDS);
-        for (int i = 0; i < arr.length(); i++) {
-            item.addChild(jsonToTree(arr.getJSONObject(i)));
+        if (item.isBranch()) {
+            JSONArray arr = json.getJSONArray(KEY_CHILDS);
+            for (int i = 0; i < arr.length(); i++) {
+                item.addChild(jsonToTree(arr.getJSONObject(i)));
+            }
         }
         return item;
     }
 
-    public void export(NoticeTree tree) throws JSONException, IOException {
+    public void save(NoticeTree tree) throws JSONException, IOException {
         JSONObject json = new JSONObject();
         treeToJson(tree.getRoot(), json);
         file.delete();

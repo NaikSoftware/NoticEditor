@@ -1,7 +1,8 @@
-package com.temporaryteam.treenote.io;
+package com.temporaryteam.treenote.format;
 
+import com.temporaryteam.treenote.format.JsonFormat;
+import com.temporaryteam.treenote.format.ZipWithIndexFormat;
 import com.temporaryteam.treenote.model.NoticeTree;
-import javafx.util.Callback;
 import net.lingala.zip4j.exception.ZipException;
 import org.json.JSONException;
 
@@ -11,9 +12,9 @@ import java.io.IOException;
 /**
  * Provides common operations with document.
  *
- * @author aNNiMON
+ * @author Naik
  */
-public final class DocumentFormat {
+public final class AutoFormat {
 
     public static NoticeTree open(File file) throws JSONException, IOException {
         try {
@@ -21,9 +22,5 @@ public final class DocumentFormat {
         } catch (ZipException | IOException | JSONException e) {
             return JsonFormat.with(file).importDocument();
         }
-    }
-
-    public static void save(File file, NoticeTree tree, ExportStrategy strategy, Callback<Exception, Void> callback) {
-        strategy.exportAsync(file, tree, callback);
     }
 }

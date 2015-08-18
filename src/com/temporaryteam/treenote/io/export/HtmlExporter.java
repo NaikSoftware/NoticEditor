@@ -1,5 +1,8 @@
-package com.temporaryteam.treenote.io;
+package com.temporaryteam.treenote.io.export;
 
+import com.temporaryteam.treenote.io.IOUtil;
+import com.temporaryteam.treenote.io.export.ExportException;
+import com.temporaryteam.treenote.io.export.Exporter;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import javafx.scene.control.TreeItem;
@@ -16,22 +19,25 @@ import java.util.Map;
 /**
  * Export notices to html.
  *
- * @author aNNiMON
+ * @author Naik, aNNiMON
  */
-public class HtmlExportStrategy extends ExportStrategy {
+public class HtmlExporter extends Exporter {
 
-    private PegDownProcessor processor;
+    private final PegDownProcessor processor;
+    private final File destDir;
     private Map<NoticeTreeItem, String> filenames;
 
-    public void setProcessor(PegDownProcessor processor) {
+    public HtmlExporter(File destDir, NoticeTree tree, PegDownProcessor processor) {
+        super(tree);
         this.processor = processor;
+        this.destDir = destDir;
     }
 
     @Override
-    public void export(File destDir, NoticeTree notice) {
+    void export() {
         filenames = new HashMap<>();
         try {
-            exportToHtmlPages(notice.getRoot(), destDir, "index");
+            exportToHtmlPages(getTree().getRoot(), destDir, "index");
         } catch (IOException ioe) {
             throw new ExportException(ioe);
         }
