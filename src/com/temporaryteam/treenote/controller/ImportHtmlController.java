@@ -20,8 +20,6 @@ public class ImportHtmlController implements Initializable {
     @FXML
     private ChoiceBox<WebImporter.Mode> choiceBoxModes;
 
-    private int currentModeId;
-
     @Override
     public void initialize(URL location, ResourceBundle res) {
         choiceBoxModes.setConverter(new StringConverter<WebImporter.Mode>() {

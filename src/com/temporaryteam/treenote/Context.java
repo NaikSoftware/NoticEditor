@@ -60,7 +60,6 @@ public class Context {
     }
 
     public static URL getFXML(String layout_name) {
-        System.out.println(FXML_DIR + layout_name + EXT);
         return Context.class.getResource(FXML_DIR + layout_name + EXT);
     }
 

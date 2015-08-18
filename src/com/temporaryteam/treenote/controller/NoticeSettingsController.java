@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;

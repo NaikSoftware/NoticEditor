@@ -41,6 +41,8 @@ public class MainController {
     @FXML
     private WebView viewer;
     @FXML
+    private MenuBar menuBar;
+    @FXML
     private MenuItem addBranchItem, addNoticeItem, deleteItem;
     @FXML
     private CheckMenuItem wordWrapItem;
@@ -300,6 +302,7 @@ public class MainController {
     private void toggleWaiting(boolean wait) {
         progressBar.setVisible(wait);
         mainPane.setDisable(wait);
+        menuBar.setDisable(wait);
     }
 
     /**
