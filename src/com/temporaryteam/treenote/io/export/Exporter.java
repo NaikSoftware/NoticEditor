@@ -9,9 +9,13 @@ import javafx.util.Callback;
  */
 public abstract class Exporter {
 
+    public static final JsonExporter JSON = new JsonExporter();
+    public static final ZipExporter ZIP = new ZipExporter();
+    public static final HtmlExporter HTML = new HtmlExporter();
+
     private NoticeTree tree;
 
-    Exporter(NoticeTree tree) {
+    protected void setup(NoticeTree tree) {
         this.tree = tree;
     }
 

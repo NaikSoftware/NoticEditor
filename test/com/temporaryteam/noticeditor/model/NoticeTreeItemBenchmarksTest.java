@@ -2,6 +2,7 @@ package com.temporaryteam.noticeditor.model;
 
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;
+import com.temporaryteam.treenote.io.export.Exporter;
 import com.temporaryteam.treenote.io.export.JsonExporter;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
@@ -40,7 +41,7 @@ public class NoticeTreeItemBenchmarksTest {
     @BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 1)
     @Test
     public void testJsonExport() throws JSONException, IOException {
-        new JsonExporter(File.createTempFile("test", ".json"), tree).export(error -> {
+        Exporter.JSON.setup(File.createTempFile("test", ".json"), tree).export(error -> {
             if (error == null) out.println("Export to JSON complete");
             else out.println("Export to JSON error: " + error);
             return null;

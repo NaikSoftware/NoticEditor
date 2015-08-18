@@ -23,14 +23,15 @@ import java.util.Map;
  */
 public class HtmlExporter extends Exporter {
 
-    private final PegDownProcessor processor;
-    private final File destDir;
+    private PegDownProcessor processor;
+    private File destDir;
     private Map<NoticeTreeItem, String> filenames;
 
-    public HtmlExporter(File destDir, NoticeTree tree, PegDownProcessor processor) {
-        super(tree);
+    public HtmlExporter setup(File destDir, NoticeTree tree, PegDownProcessor processor) {
+        setup(tree);
         this.processor = processor;
         this.destDir = destDir;
+        return this;
     }
 
     @Override

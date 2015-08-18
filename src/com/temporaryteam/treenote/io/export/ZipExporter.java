@@ -10,11 +10,12 @@ import java.io.File;
  */
 public class ZipExporter extends Exporter {
 
-    private final File file;
+    private File file;
 
-    public ZipExporter(File file, NoticeTree tree) {
-        super(tree);
+    public ZipExporter setup(File file, NoticeTree tree) {
+        setup(tree);
         this.file = file;
+        return this;
     }
 
     @Override

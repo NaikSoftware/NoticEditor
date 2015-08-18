@@ -223,9 +223,9 @@ public class MainController {
     private void saveDocument(File file) {
         if (Chooser.JSON.equals(Chooser.getLastSelectedExtensionFilter())
                 || file.getName().toLowerCase().endsWith(".json")) {
-            processExport(new JsonExporter(file, noticeTree));
+            processExport(Exporter.JSON.setup(file, noticeTree));
         } else {
-            processExport(new ZipExporter(file, noticeTree));
+            processExport(Exporter.ZIP.setup(file, noticeTree));
         }
     }
 
@@ -235,7 +235,7 @@ public class MainController {
                 .title("Select directory to save HTML files")
                 .show();
         if (destDir == null) return;
-        processExport(new HtmlExporter(destDir, noticeTree, processor));
+        processExport(Exporter.HTML.setup(destDir, noticeTree, processor));
     }
 
     @FXML

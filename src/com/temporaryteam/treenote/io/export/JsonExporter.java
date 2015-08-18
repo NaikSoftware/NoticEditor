@@ -10,11 +10,12 @@ import java.io.File;
  */
 public class JsonExporter extends Exporter {
 
-    private final File file;
+    private File file;
 
-    public JsonExporter(File file, NoticeTree tree) {
-        super(tree);
-        this.file = file;
+    public JsonExporter setup(File file, NoticeTree tree) {
+        setup(tree);
+        this.file= file;
+        return this;
     }
 
     @Override
