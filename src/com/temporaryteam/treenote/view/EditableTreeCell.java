@@ -80,7 +80,7 @@ public class EditableTreeCell extends TreeCell<String> {
             return null;
         }
         switch (getModel().getStatus()) {
-            case NoticeTreeItem.STATUS_IMPORTANT:
+            case IMPORTANT:
                 return CIRCLE_YELLOW;
             default:
                 return CIRCLE_AQUAMARINE;

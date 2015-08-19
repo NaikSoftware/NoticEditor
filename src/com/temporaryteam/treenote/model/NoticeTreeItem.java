@@ -1,6 +1,8 @@
 package com.temporaryteam.treenote.model;
 
 import javafx.beans.Observable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -14,13 +16,10 @@ import javafx.scene.control.TreeItem;
  */
 public class NoticeTreeItem extends TreeItem<String> {
 
-    public static final int STATUS_NORMAL = 0;
-    public static final int STATUS_IMPORTANT = 1;
-
     private String title;
     private ObservableList<TreeItem<String>> childs;
     private String content;
-    private int status;
+    private ObjectProperty<NoticeStatus> statusProperty;
 
     private final ObservableList<Attached> attaches = FXCollections.observableArrayList(
             attached -> new Observable[]{attached.stateProperty()});
@@ -34,7 +33,7 @@ public class NoticeTreeItem extends TreeItem<String> {
      * @param title
      */
     public NoticeTreeItem(String title) {
-        this(title, null, 0);
+        this(title, null, null);
     }
 
     /**
@@ -44,21 +43,39 @@ public class NoticeTreeItem extends TreeItem<String> {
      * @param content
      * @param status
      */
-    public NoticeTreeItem(String title, String content, int status) {
+    public NoticeTreeItem(String title, String content, NoticeStatus status) {
         super(title);
         this.title = title;
         this.content = content;
-        this.status = status;
         childs = getChildren();
+        attaches.addListener((Observable o) -> fireChanges());
+        statusProperty = new SimpleObjectProperty<NoticeStatus>(status) {
+            @Override
+            protected void invalidated() {
+                requestUpdateTreeView();
+                fireChanges();
+            }
+        };
     }
 
     /**
-     * Do not use this directly. For adding exists {@link  NoticeTree#addItem}
+     * Do not use this directly. For adding exists {@link  NoticeTree#addItem(NoticeTreeItem, NoticeTreeItem)}
      *
      * @param item
      */
     public void addChild(NoticeTreeItem item) {
         childs.add(item);
+        fireChanges();
+    }
+
+    /**
+     * Do not use this directly. For removing exists {@link  NoticeTree#removeItem(NoticeTreeItem)} Item}
+     *
+     * @param item
+     */
+    public void removeChild(NoticeTreeItem item) {
+        childs.remove(item);
+        fireChanges();
     }
 
     /**
@@ -103,21 +120,41 @@ public class NoticeTreeItem extends TreeItem<String> {
     public void setTitle(String title) {
         setValue(title);
         this.title = title;
+        fireChanges();
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-        Event.fireEvent(this, new TreeModificationEvent(childrenModificationEvent(), this));
+    public void setStatus(NoticeStatus status) {
+        statusProperty.set(status);
     }
 
-    public int getStatus() {
-        return status;
+    public NoticeStatus getStatus() {
+        return statusProperty.get();
+    }
+
+    public ObjectProperty<NoticeStatus> statusProperty() {
+        return statusProperty;
     }
 
     public void addAttach(Attached attached) {
         if (isLeaf()) {
             attaches.add(attached);
         }
+    }
+
+    public void removeAttach(Attached attached) {
+        if (attached.getState() == Attached.State.ATTACHED) {
+            attached.changeState(Attached.State.REMOVED);
+        } else {
+            attaches.remove(attached);
+        }
+    }
+
+    private void fireChanges() {
+        Event.fireEvent(this, new TreeModificationEvent(NoticeTree.documentChangedEvent(), this));
+    }
+
+    private void requestUpdateTreeView() {
+        Event.fireEvent(this, new TreeModificationEvent(TreeItem.valueChangedEvent(), this));
     }
 
     public ObservableList<Attached> getAttaches() {

@@ -1,5 +1,8 @@
 package com.temporaryteam.treenote.model;
 
+import javafx.event.EventType;
+import javafx.scene.control.TreeItem;
+
 public class NoticeTree {
 
     private final NoticeTreeItem root;
@@ -22,13 +25,20 @@ public class NoticeTree {
         } else if (parent.isLeaf()) {
             parent = (NoticeTreeItem) parent.getParent();
         }
-        parent.getChildren().add(item);
+        parent.addChild(item);
         parent.setExpanded(true);
     }
 
     public void removeItem(NoticeTreeItem item) {
         if (item == null) return;
-        item.getParent().getChildren().remove(item);
+        ((NoticeTreeItem)item.getParent()).removeChild(item);
     }
+
+    public static EventType documentChangedEvent() {
+        return DOCUMENT_CHANGED_EVENT;
+    }
+
+    private static final EventType DOCUMENT_CHANGED_EVENT = new EventType(
+            TreeItem.valueChangedEvent(), "DocumentChangedEvent");
 
 }

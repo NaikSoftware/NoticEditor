@@ -2,7 +2,7 @@ package com.temporaryteam.treenote.view;
 
 import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.controller.ImportHtmlController;
-import com.temporaryteam.treenote.io.importer.WebImporter;
+import com.temporaryteam.treenote.io.importers.WebImporter;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextInputDialog;
 

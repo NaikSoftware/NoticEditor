@@ -1,8 +1,6 @@
 package com.temporaryteam.treenote.io.export;
 
 import com.temporaryteam.treenote.io.IOUtil;
-import com.temporaryteam.treenote.io.export.ExportException;
-import com.temporaryteam.treenote.io.export.Exporter;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import javafx.scene.control.TreeItem;
@@ -27,9 +25,12 @@ public class HtmlExporter extends Exporter {
     private File destDir;
     private Map<NoticeTreeItem, String> filenames;
 
-    public HtmlExporter setup(File destDir, NoticeTree tree, PegDownProcessor processor) {
-        setup(tree);
+    public void setProcessor(PegDownProcessor processor) {
         this.processor = processor;
+    }
+
+    public HtmlExporter setup(File destDir, NoticeTree tree) {
+        setup(tree);
         this.destDir = destDir;
         return this;
     }
@@ -90,7 +91,7 @@ public class HtmlExporter extends Exporter {
             item.appendElement("span").addClass("glyphicon glyphicon-folder-open");
         } else {
             switch (child.getStatus()) {
-                case NoticeTreeItem.STATUS_IMPORTANT:
+                case IMPORTANT:
                     item.appendElement("span").addClass("glyphicon glyphicon-pushpin important");
                     break;
                 default:

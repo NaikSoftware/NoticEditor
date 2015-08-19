@@ -1,10 +1,9 @@
 package com.temporaryteam.treenote.controller;
 
 import com.temporaryteam.treenote.model.Attached;
+import com.temporaryteam.treenote.model.NoticeStatus;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.view.Chooser;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,11 +29,12 @@ public class NoticeSettingsController implements Initializable {
     @FXML
     private ListView<Attached> listAttached;
     @FXML
-    private ChoiceBox<String> choiceBoxNoticeStatus;
+    private ChoiceBox<NoticeStatus> choiceBoxNoticeStatus;
 
     private MainController mainController;
     private ResourceBundle res;
     private final ObservableList emptyList = FXCollections.emptyObservableList();
+    private NoticeTreeItem openedItem;
 
     /**
      * Initializes the controller class.
@@ -42,19 +42,7 @@ public class NoticeSettingsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.res = rb;
-        choiceBoxNoticeStatus.setItems(FXCollections.observableArrayList(
-                tr("normal"), tr("important")
-        ));
-        choiceBoxNoticeStatus.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                NoticeTreeItem currentNotice = mainController.getCurrentNotice();
-                if (currentNotice != null && currentNotice.isLeaf()) {
-                    currentNotice.setStatus(newValue.intValue());
-                }
-            }
-        });
+        choiceBoxNoticeStatus.setItems(FXCollections.observableArrayList(NoticeStatus.values()));
         open(null);
     }
 
@@ -63,26 +51,26 @@ public class NoticeSettingsController implements Initializable {
     }
 
     public void open(NoticeTreeItem item) {
+        if (openedItem != null && openedItem.isLeaf()) {
+            choiceBoxNoticeStatus.valueProperty().unbindBidirectional(openedItem.statusProperty());
+        }
         if (item == null || item.isBranch()) {
             choiceBoxNoticeStatus.getSelectionModel().clearSelection();
             listAttached.setItems(emptyList);
             settingsPane.setDisable(true);
         } else {
-            choiceBoxNoticeStatus.getSelectionModel().select(item.getStatus());
+            choiceBoxNoticeStatus.valueProperty().bindBidirectional(item.statusProperty());
             listAttached.setItems(item.getAttachesForDisplay());
             settingsPane.setDisable(false);
         }
+        openedItem = item;
     }
 
     @FXML
     private void handleRemoveAttach(ActionEvent event) {
         Attached toRemove = listAttached.getSelectionModel().getSelectedItem();
         if (toRemove != null) {
-            if (toRemove.getState() == Attached.State.NEW) {
-                mainController.getCurrentNotice().getAttaches().remove(toRemove);
-            } else {
-                toRemove.changeState(Attached.State.REMOVED);
-            }
+            openedItem.removeAttach(toRemove);
         }
     }
 
@@ -92,8 +80,7 @@ public class NoticeSettingsController implements Initializable {
         if (file == null) {
             return;
         }
-        mainController.getCurrentNotice().addAttach(
-                new Attached(Attached.State.NEW, file.getAbsolutePath(), file.getName()));
+        openedItem.addAttach(new Attached(Attached.State.NEW, file.getAbsolutePath(), file.getName()));
     }
 
     @FXML

@@ -1,12 +1,11 @@
 package com.temporaryteam.treenote.format;
 
-import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.io.IOUtil;
 import com.temporaryteam.treenote.model.Attached;
+import com.temporaryteam.treenote.model.NoticeStatus;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.view.InputPasswordDialog;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeItem;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -39,7 +38,7 @@ public class ZipWithIndexFormat {
     private static final String BRANCH_PREFIX = "branch_";
     private static final String NOTE_PREFIX = "note_";
 
-    private static final InputPasswordDialog inputPassDialog = new InputPasswordDialog();
+    //private static final InputPasswordDialog inputPassDialog = new InputPasswordDialog();
 
     public static ZipWithIndexFormat with(File file) throws ZipException {
         return new ZipWithIndexFormat(file);
@@ -97,7 +96,7 @@ public class ZipWithIndexFormat {
     private NoticeTreeItem readNotices(String dir, JSONObject index) throws IOException, JSONException, ZipException {
         final String title = index.getString(KEY_TITLE);
         final String filename = index.getString(KEY_FILENAME);
-        final int status = index.optInt(KEY_STATUS, NoticeTreeItem.STATUS_NORMAL);
+        final NoticeStatus status = NoticeStatus.fromId(index.optInt(KEY_STATUS, 0));
         final String dirPrefix = index.has(KEY_CHILDS) ? BRANCH_PREFIX : NOTE_PREFIX;
 
         final String newDir = dir + dirPrefix + filename + "/";
@@ -165,7 +164,7 @@ public class ZipWithIndexFormat {
             // ../note_filename/filename.md
             String noticePath = newDir + getUniqueName(newDir, "/" + filename + ".md");
             storeFile(noticePath, IOUtil.toStream(item.getContent()), tempZip);
-            index.put(KEY_STATUS, item.getStatus());
+            index.put(KEY_STATUS, item.getStatus().getId());
             index.put(KEY_ATTACHES, saveAttaches(item.getAttaches(), newDir));
         }
     }

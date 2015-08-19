@@ -1,5 +1,6 @@
 package com.temporaryteam.noticeditor.model;
 
+import com.temporaryteam.treenote.model.NoticeStatus;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import org.junit.Test;
 
@@ -15,7 +16,7 @@ public class NoticeTreeItemTest {
         assertEquals(0, branch.getChildren().size());
 
         branch.addChild(new NoticeTreeItem("branch"));
-        branch.addChild(new NoticeTreeItem("leaf", "content", NoticeTreeItem.STATUS_NORMAL));
+        branch.addChild(new NoticeTreeItem("leaf", "content", NoticeStatus.NORMAL));
         assertEquals(2, branch.getChildren().size());
 
         assertEquals("leaf", ((NoticeTreeItem) branch.getChildren().get(1)).getTitle());
@@ -23,7 +24,7 @@ public class NoticeTreeItemTest {
 
     @Test
     public void testLeaf() {
-        NoticeTreeItem leaf = new NoticeTreeItem("leaf", "content", NoticeTreeItem.STATUS_NORMAL);
+        NoticeTreeItem leaf = new NoticeTreeItem("leaf", "content", NoticeStatus.NORMAL);
         assertEquals("leaf", leaf.getTitle());
         assertFalse(leaf.isBranch());
         assertTrue(leaf.isLeaf());
@@ -47,7 +48,7 @@ public class NoticeTreeItemTest {
         branch.changeContent("test");
         assertNull(branch.getContent());
 
-        NoticeTreeItem leaf = new NoticeTreeItem("leaf", "content", NoticeTreeItem.STATUS_NORMAL);
+        NoticeTreeItem leaf = new NoticeTreeItem("leaf", "content", NoticeStatus.NORMAL);
         assertEquals("content", leaf.getContent());
         leaf.changeContent("test");
         assertEquals("test", leaf.getContent());

@@ -1,6 +1,7 @@
 package com.temporaryteam.treenote.format;
 
 import com.temporaryteam.treenote.io.IOUtil;
+import com.temporaryteam.treenote.model.NoticeStatus;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
 import javafx.scene.control.TreeItem;
@@ -35,7 +36,7 @@ public class JsonFormat {
 
     private NoticeTreeItem jsonToTree(JSONObject json) throws JSONException {
         NoticeTreeItem item = new NoticeTreeItem(json.getString(KEY_TITLE), json.optString(KEY_CONTENT, null),
-                json.optInt(KEY_STATUS, NoticeTreeItem.STATUS_NORMAL));
+                NoticeStatus.fromId(json.optInt(KEY_STATUS, 0)));
         if (item.isBranch()) {
             JSONArray arr = json.getJSONArray(KEY_CHILDS);
             for (int i = 0; i < arr.length(); i++) {
@@ -64,7 +65,7 @@ public class JsonFormat {
             }
             json.put(KEY_CHILDS, childs);
         } else {
-            json.put(KEY_STATUS, item.getStatus());
+            json.put(KEY_STATUS, item.getStatus().getId());
             json.put(KEY_CONTENT, item.getContent());
         }
     }
