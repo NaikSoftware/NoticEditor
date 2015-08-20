@@ -10,7 +10,7 @@ import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.model.PreviewStyles;
 import com.temporaryteam.treenote.view.Chooser;
 import com.temporaryteam.treenote.view.EditableTreeCell;
-import com.temporaryteam.treenote.view.ImportHtmlDialog;
+import com.temporaryteam.treenote.view.ImportHtmlWindow;
 import com.temporaryteam.treenote.view.SimpleAlert;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -67,6 +67,7 @@ public class MainController {
     private File fileSaved;
     private BooleanProperty saved = new SimpleBooleanProperty(false);
     private boolean editing = true;
+    private ImportHtmlWindow importHtmlWindow;
 
     /**
      * Initializes the controller class.
@@ -78,6 +79,7 @@ public class MainController {
         noticeSettingsController.setMainController(this);
         engine = viewer.getEngine();
         progressBar.managedProperty().bind(progressBar.visibleProperty()); // for hide progress bar
+        importHtmlWindow = new ImportHtmlWindow();
 
         // Set preview styles menu items
         ToggleGroup previewStyleGroup = new ToggleGroup();
@@ -254,18 +256,13 @@ public class MainController {
             SimpleAlert.info(tr("select_notice"));
             return;
         }
-        ImportHtmlDialog dialog = new ImportHtmlDialog(tr("input_url"));
-        dialog.showAndWait().ifPresent((url) -> {
-            toggleWaiting(true);
-            WebImporter.from(url).mode(dialog.getSelectedMode()).grab((result) -> {
-                toggleWaiting(false);
-                if (result instanceof Exception) {
-                    SimpleAlert.error(tr("loading_error"), (Exception) result);
-                } else {
-                    noticeArea.setText(result.toString());
-                }
-                return null;
-            });
+        importHtmlWindow.showAndWait((html, error) -> {
+            importHtmlWindow.close();
+            if (html == null) {
+                SimpleAlert.error(tr("loading_error"), error);
+            } else {
+                noticeArea.setText(html);
+            }
         });
     }
 

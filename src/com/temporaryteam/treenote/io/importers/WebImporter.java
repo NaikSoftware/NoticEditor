@@ -2,9 +2,7 @@ package com.temporaryteam.treenote.io.importers;
 
 import com.temporaryteam.treenote.Context;
 import javafx.application.Platform;
-import javafx.util.Callback;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 
 import java.io.*;
@@ -39,44 +37,34 @@ public class WebImporter {
         }
     }
 
-    public static WebImporter from(String url) {
-        return new WebImporter(url);
+    public WebImporter(Mode mode) {
+        this.mode = mode;
     }
 
-    private final String url;
-    private String addr;
-    private String html;
+    private String origHtml;
+    private String lastUrl;
     private Mode mode;
 
-    private WebImporter(String url) {
-        this.url = url;
-        this.addr = url;
-        int endProtocol = url.indexOf("://") + 3;
-        int end = url.lastIndexOf("/");
-        if (endProtocol > 0) {
-            addr = url.substring(0, end > endProtocol ? end : addr.length());
-        }
-    }
-
-    public WebImporter mode(Mode mode) {
+    public void newMode(Mode mode) {
         this.mode = mode;
-        return this;
     }
 
-    public void grab(final Callback<Object, Void> callback) {
+    public void grab(String url, final ImportCallback callback) {
         new Thread(() -> {
-            try {
-                InputStream stream = new URL(url).openStream();
-                readHTML(stream);
-                clear();
-                Platform.runLater(() -> callback.call(html));
+            try (InputStream stream = new URL(url).openStream()) {
+                if (origHtml == null || lastUrl != url) {
+                    origHtml = readHTML(stream);
+                    lastUrl = url;
+                }
+                String html = clearHTML(origHtml, url);
+                Platform.runLater(() -> callback.call(html, null));
             } catch (Exception ex) {
-                Platform.runLater(() -> callback.call(ex));
+                Platform.runLater(() -> callback.call(null, ex));
             }
         }).start();
     }
 
-    private void readHTML(InputStream stream) throws IOException {
+    private String readHTML(InputStream stream) throws IOException {
         final StringBuilder result = new StringBuilder();
         try (Reader isr = new InputStreamReader(stream);
              BufferedReader reader = new BufferedReader(isr)) {
@@ -85,12 +73,22 @@ public class WebImporter {
                 result.append(line.trim()).append(System.lineSeparator());
             }
         }
-        html = result.toString();
+        return result.toString();
     }
 
-    private void clear() {
-        if (mode.whitelist == null) return;
-        html = Jsoup.clean(html, addr, mode.whitelist);
+    private String clearHTML(String html, String url) {
+        if (mode.whitelist == null) return origHtml;
+        return Jsoup.clean(html, getBaseUrl(url), mode.whitelist);
+    }
+
+    private String getBaseUrl(String fullUrl) {
+        String baseUrl = fullUrl;
+        int endProtocol = fullUrl.indexOf("://") + 3;
+        int end = fullUrl.lastIndexOf("/", endProtocol);
+        if (endProtocol > 0) {
+            baseUrl = fullUrl.substring(0, end > 0 ? end : baseUrl.length());
+        }
+        return baseUrl;
     }
 
 }
