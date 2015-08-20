@@ -22,33 +22,6 @@ public class ImportHtmlController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
-        choiceBoxModes.setConverter(new StringConverter<WebImporter.Mode>() {
-
-            @Override
-            public String toString(WebImporter.Mode mode) {
-                switch (mode) {
-                    case BASIC_WITH_IMAGES:
-                        return res.getString("basic_with_img");
-                    case ONLY_TEXT:
-                        return res.getString("only_text");
-                    case RELAXED:
-                        return res.getString("relaxed");
-                    case SIMPLE_TEXT:
-                        return res.getString("simple_text");
-                    case ORIGINAL:
-                        return res.getString("original");
-                    default:
-                        BASIC:
-                        return res.getString("basic");
-                }
-            }
-
-            @Override
-            public WebImporter.Mode fromString(String string) {
-                return null;
-            }
-        });
-
         choiceBoxModes.setItems(FXCollections.observableArrayList(WebImporter.Mode.values()));
         choiceBoxModes.getSelectionModel().selectFirst();
     }

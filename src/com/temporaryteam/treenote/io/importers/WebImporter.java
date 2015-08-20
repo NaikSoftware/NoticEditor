@@ -1,5 +1,6 @@
 package com.temporaryteam.treenote.io.importers;
 
+import com.temporaryteam.treenote.Context;
 import javafx.application.Platform;
 import javafx.util.Callback;
 import org.jsoup.Jsoup;
@@ -17,7 +18,25 @@ import java.net.URL;
 public class WebImporter {
 
     public enum Mode {
-        RELAXED, ONLY_TEXT, ORIGINAL, BASIC, BASIC_WITH_IMAGES, SIMPLE_TEXT
+        RELAXED("relaxed", Whitelist.relaxed()),
+        ONLY_TEXT("only_text", Whitelist.none()),
+        ORIGINAL("original", null),
+        BASIC("basic", Whitelist.basic()),
+        BASIC_WITH_IMAGES("basic_with_img", Whitelist.basicWithImages()),
+        SIMPLE_TEXT("simple_text", Whitelist.simpleText());
+
+        private final String name;
+        private final Whitelist whitelist;
+
+        Mode(String name_id, Whitelist whitelist) {
+            this.name = Context.getResources().getString(name_id);
+            this.whitelist = whitelist;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     public static WebImporter from(String url) {
@@ -44,15 +63,15 @@ public class WebImporter {
         return this;
     }
 
-    public void grab(final Callback<Object, Void> calback) {
+    public void grab(final Callback<Object, Void> callback) {
         new Thread(() -> {
             try {
                 InputStream stream = new URL(url).openStream();
                 readHTML(stream);
                 clear();
-                Platform.runLater(() -> calback.call(html));
+                Platform.runLater(() -> callback.call(html));
             } catch (Exception ex) {
-                Platform.runLater(() -> calback.call(ex));
+                Platform.runLater(() -> callback.call(ex));
             }
         }).start();
     }
@@ -70,24 +89,8 @@ public class WebImporter {
     }
 
     private void clear() {
-        Whitelist whitelist = Whitelist.basic();
-        switch (mode) {
-            case ONLY_TEXT:
-                whitelist = Whitelist.none();
-                break;
-            case BASIC_WITH_IMAGES:
-                whitelist = Whitelist.basicWithImages();
-                break;
-            case RELAXED:
-                whitelist = Whitelist.relaxed();
-                break;
-            case SIMPLE_TEXT:
-                whitelist = Whitelist.simpleText();
-                break;
-            case ORIGINAL:
-                return;
-        }
-        html = Jsoup.clean(html, addr, whitelist, new Document.OutputSettings().indentAmount(0));
+        if (mode.whitelist == null) return;
+        html = Jsoup.clean(html, addr, mode.whitelist);
     }
 
 }

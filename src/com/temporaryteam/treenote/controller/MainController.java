@@ -183,7 +183,6 @@ public class MainController {
         }
     }
 
-
     @FXML
     private void handleNew(ActionEvent event) {
         fileSaved = null;
