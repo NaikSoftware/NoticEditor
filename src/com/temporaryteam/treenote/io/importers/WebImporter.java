@@ -16,10 +16,6 @@ import java.net.URL;
  */
 public class WebImporter {
 
-    public enum Mode {
-        RELAXED, ONLY_TEXT, ORIGINAL, BASIC, BASIC_WITH_IMAGES, SIMPLE_TEXT
-    }
-
     public static WebImporter from(String url) {
         return new WebImporter(url);
     }
@@ -27,7 +23,7 @@ public class WebImporter {
     private final String url;
     private String addr;
     private String html;
-    private Mode mode;
+    private HtmlImportMode mode;
 
     private WebImporter(String url) {
         this.url = url;
@@ -39,7 +35,7 @@ public class WebImporter {
         }
     }
 
-    public WebImporter mode(Mode mode) {
+    public WebImporter mode(HtmlImportMode mode) {
         this.mode = mode;
         return this;
     }
@@ -70,23 +66,8 @@ public class WebImporter {
     }
 
     private void clear() {
-        Whitelist whitelist = Whitelist.basic();
-        switch (mode) {
-            case ONLY_TEXT:
-                whitelist = Whitelist.none();
-                break;
-            case BASIC_WITH_IMAGES:
-                whitelist = Whitelist.basicWithImages();
-                break;
-            case RELAXED:
-                whitelist = Whitelist.relaxed();
-                break;
-            case SIMPLE_TEXT:
-                whitelist = Whitelist.simpleText();
-                break;
-            case ORIGINAL:
-                return;
-        }
+        Whitelist whitelist = mode.getWhitelist();
+        if (mode == null) return;
         html = Jsoup.clean(html, addr, whitelist, new Document.OutputSettings().indentAmount(0));
     }
 

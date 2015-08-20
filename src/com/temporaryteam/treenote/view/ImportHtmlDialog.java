@@ -2,7 +2,7 @@ package com.temporaryteam.treenote.view;
 
 import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.controller.ImportHtmlController;
-import com.temporaryteam.treenote.io.importers.WebImporter;
+import com.temporaryteam.treenote.io.importers.HtmlImportMode;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextInputDialog;
 
@@ -30,7 +30,7 @@ public class ImportHtmlDialog extends TextInputDialog {
         }
     }
 
-    public WebImporter.Mode getSelectedMode() {
+    public HtmlImportMode getSelectedMode() {
         return controller.getSelectedMode();
     }
 

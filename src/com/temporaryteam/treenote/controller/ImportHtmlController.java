@@ -1,6 +1,6 @@
 package com.temporaryteam.treenote.controller;
 
-import com.temporaryteam.treenote.io.importers.WebImporter;
+import com.temporaryteam.treenote.io.importers.HtmlImportMode;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,42 +18,28 @@ import java.util.ResourceBundle;
 public class ImportHtmlController implements Initializable {
 
     @FXML
-    private ChoiceBox<WebImporter.Mode> choiceBoxModes;
+    private ChoiceBox<HtmlImportMode> choiceBoxModes;
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
-        choiceBoxModes.setConverter(new StringConverter<WebImporter.Mode>() {
+        choiceBoxModes.setConverter(new StringConverter<HtmlImportMode>() {
 
             @Override
-            public String toString(WebImporter.Mode mode) {
-                switch (mode) {
-                    case BASIC_WITH_IMAGES:
-                        return res.getString("basic_with_img");
-                    case ONLY_TEXT:
-                        return res.getString("only_text");
-                    case RELAXED:
-                        return res.getString("relaxed");
-                    case SIMPLE_TEXT:
-                        return res.getString("simple_text");
-                    case ORIGINAL:
-                        return res.getString("original");
-                    default:
-                        BASIC:
-                        return res.getString("basic");
-                }
+            public String toString(HtmlImportMode mode) {
+				return res.getString(mode.getName());
             }
 
             @Override
-            public WebImporter.Mode fromString(String string) {
+            public HtmlImportMode fromString(String string) {
                 return null;
             }
         });
 
-        choiceBoxModes.setItems(FXCollections.observableArrayList(WebImporter.Mode.values()));
+        choiceBoxModes.setItems(FXCollections.observableArrayList(HtmlImportMode.values()));
         choiceBoxModes.getSelectionModel().selectFirst();
     }
 
-    public WebImporter.Mode getSelectedMode() {
+    public HtmlImportMode getSelectedMode() {
         return choiceBoxModes.getValue();
     }
 
