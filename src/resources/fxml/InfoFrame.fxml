@@ -19,7 +19,7 @@
         </Label>
         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../resources/images/tree_note.png"/>
+                <Image url="@/resources/images/tree_note.png"/>
             </image>
         </ImageView>
         <TextArea editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"

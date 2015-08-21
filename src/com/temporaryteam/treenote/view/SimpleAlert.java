@@ -21,7 +21,7 @@ public class SimpleAlert extends Alert {
     public static Optional<ButtonType> confirm(String header) {
         SimpleAlert alert = getInstance(AlertType.CONFIRMATION, ButtonType.APPLY, ButtonType.NO);
         alert.setHeaderText(header);
-        return Optional.of(alert.showAndWait().get());
+        return alert.showAndWait();
     }
 
     public static void info(String header) {
