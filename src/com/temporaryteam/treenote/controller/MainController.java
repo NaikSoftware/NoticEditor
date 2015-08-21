@@ -3,7 +3,6 @@ package com.temporaryteam.treenote.controller;
 import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.format.AutoFormat;
 import com.temporaryteam.treenote.io.export.Exporter;
-import com.temporaryteam.treenote.io.importers.WebImporter;
 import com.temporaryteam.treenote.model.NoticeStatus;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
@@ -102,12 +101,14 @@ public class MainController {
             previewStyleMenu.getItems().add(item);
         }
 
+        // Setup notice tree
         noticeTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         noticeTreeView.getSelectionModel().selectedItemProperty().addListener((observable, oldVal, newVal) -> {
             setCurrentItem((NoticeTreeItem) newVal);
         });
         noticeTreeView.setCellFactory(treeView -> new EditableTreeCell());
 
+        // Setup notice area
         noticeArea.textProperty().addListener((observable, oldVal, newVal) -> {
             engine.loadContent(processor.markdownToHtml(newVal));
             if (currentTreeItem != null && editing) {
@@ -117,10 +118,19 @@ public class MainController {
         });
         noticeArea.wrapTextProperty().bind(wordWrapItem.selectedProperty());
 
+        // Miscellaneous listeners
         hideEditorMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
             editorPanel.getDividers().get(0).setPosition(newValue ? 0 : 0.5);
         });
+        Context.getPrimaryStage().setOnCloseRequest(event -> {
+            if (!saved.get()) {
+                SimpleAlert.confirm(tr("exit_alert")).ifPresent(btn -> {
+                    if (btn != ButtonType.APPLY) event.consume();
+                });
+            }
+        });
 
+        // Setup saving listeners
         noticeTreeView.rootProperty().addListener(observable -> {
             if (!saved.get()) updateWindowTitle(); // force update when root changed if already "not saved"
             else saved.set(false); // or regular update title
@@ -282,7 +292,9 @@ public class MainController {
 
     @FXML
     private void handleExit(ActionEvent event) {
-        Platform.exit();
+        SimpleAlert.confirm(tr("exit_alert")).ifPresent(btn -> {
+            if (btn == ButtonType.APPLY) Platform.exit();
+        });
     }
 
     @FXML
