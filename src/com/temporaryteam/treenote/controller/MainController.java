@@ -110,7 +110,7 @@ public class MainController {
 
         // Setup notice area
         noticeArea.textProperty().addListener((observable, oldVal, newVal) -> {
-            engine.loadContent(processor.markdownToHtml(newVal));
+            engine.loadContent(processor.markdownToHtml(newVal), "text/html");
             if (currentTreeItem != null && editing) {
                 currentTreeItem.changeContent(newVal);
                 saved.set(false); // change status only if modified content belongs to this item

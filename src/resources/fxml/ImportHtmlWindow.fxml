@@ -19,7 +19,7 @@
         <RowConstraints vgrow="ALWAYS"/>
     </rowConstraints>
     <children>
-        <TextField fx:id="urlField" promptText="http://" GridPane.columnSpan="2" text="http://"/>
+        <TextField fx:id="urlField" promptText="http://" GridPane.columnSpan="2" text="http://" onAction="#handlePreview"/>
         <Button mnemonicParsing="false" onAction="#handlePreview" text="%preview" GridPane.columnIndex="2"/>
         <Button mnemonicParsing="false" onAction="#handleImport" text="%import" GridPane.columnIndex="3"/>
         <VBox fx:id="modesBox" spacing="5.0" GridPane.rowIndex="1"/>

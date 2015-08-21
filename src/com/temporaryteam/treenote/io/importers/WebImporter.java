@@ -66,7 +66,7 @@ public class WebImporter {
 
     private String readHTML(InputStream stream) throws IOException {
         final StringBuilder result = new StringBuilder();
-        try (Reader isr = new InputStreamReader(stream);
+        try (Reader isr = new InputStreamReader(stream, "UTF-8");
              BufferedReader reader = new BufferedReader(isr)) {
             String line;
             while ((line = reader.readLine()) != null) {

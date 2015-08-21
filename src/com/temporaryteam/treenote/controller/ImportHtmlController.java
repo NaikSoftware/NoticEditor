@@ -8,7 +8,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -48,8 +50,6 @@ public class ImportHtmlController implements Initializable {
             nodes.add(radio);
             if (mode == DEFAULT_MODE) radio.setSelected(true);
         }
-
-        pagePreview.getEngine().loadContent(resources.getString("preview"), "text/html");
     }
 
     public void setImportCallback(ImportCallback importCallback) {
@@ -63,9 +63,12 @@ public class ImportHtmlController implements Initializable {
 
     @FXML
     private void handlePreview(ActionEvent event) {
+        Scene scene = Context.getPrimaryStage().getScene();
+        scene.setCursor(Cursor.WAIT);
         importer.grab(urlField.getText(), (html, error) -> {
+            scene.setCursor(Cursor.DEFAULT);
             if (html != null) {
-                pagePreview.getEngine().loadContent(html);
+                pagePreview.getEngine().loadContent(html, "text/html");
             } else {
                 SimpleAlert.error(Context.getResources().getString("loading_error"), error);
             }
