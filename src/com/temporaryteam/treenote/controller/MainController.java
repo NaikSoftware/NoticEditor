@@ -77,7 +77,6 @@ public class MainController {
         Exporter.HTML.setProcessor(processor);
         noticeSettingsController.setMainController(this);
         engine = viewer.getEngine();
-        progressBar.managedProperty().bind(progressBar.visibleProperty()); // for hide progress bar
         importHtmlWindow = new ImportHtmlWindow();
 
         // Set preview styles menu items
@@ -116,7 +115,6 @@ public class MainController {
                 saved.set(false); // change status only if modified content belongs to this item
             }
         });
-        noticeArea.wrapTextProperty().bind(wordWrapItem.selectedProperty());
 
         // Miscellaneous listeners
         hideEditorMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {

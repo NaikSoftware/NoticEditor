@@ -41,7 +41,8 @@
         </MenuBar>
         <VBox maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS" maxWidth="1.7976931348623157E308">
             <children>
-                <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0" visible="false"/>
+                <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0" visible="false"
+                        managed="${progressBar.visible}"/>
                 <SplitPane fx:id="mainPane" dividerPositions="0.35" maxHeight="1.7976931348623157E308"
                            maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <items>
@@ -111,7 +112,8 @@
                                    maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="400.0">
                             <items>
                                 <TextArea fx:id="noticeArea" minWidth="0.0" maxHeight="1.7976931348623157E308"
-                                          maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="310.0"/>
+                                          maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="310.0"
+                                          wrapText="${wordWrapItem.selected}"/>
                                 <WebView fx:id="viewer" minHeight="-1.0" minWidth="-1.0" prefHeight="400.0"
                                          prefWidth="310.0"/>
                             </items>

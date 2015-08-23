@@ -41,7 +41,6 @@ public class ImportHtmlController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<Node> nodes = modesBox.getChildren();
-        nodes.clear();
         final ToggleGroup modesGroup = new ToggleGroup();
         for (WebImporter.Mode mode : WebImporter.Mode.values()) {
             RadioButton radio = new RadioButton(mode.toString());
