@@ -10,6 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        System.setProperty("prism.lcdtext", "false");
         primaryStage.setTitle("TreeNote");
         ResourceBundle res = ResourceBundle.getBundle("resources.translate.Language", Locale.getDefault());
         Context.init(res, primaryStage);
