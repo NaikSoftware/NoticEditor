@@ -1,0 +1,30 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="TreeNote">
+    <output-path>$PROJECT_DIR$/out/artifacts/TreeNote</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="com.temporaryteam.treenote.Main" />
+        <option name="description" value="" />
+        <option name="htmlParamFile" value="" />
+        <option name="paramFile" value="" />
+        <option name="title" value="TreeNote" />
+        <option name="vendor" value="NaikSoftware" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="TreeNote.jar">
+        <element id="module-output" name="TreeNote" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/asm-4.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/asm-analysis-4.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/asm-tree-4.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/asm-util-4.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/jsoup-1.8.3.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/org.json-chargebee-1.0.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/parboiled-core-1.1.7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/parboiled-java-1.1.7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/pegdown-1.5.0.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/zip4j-1.3.2.jar" path-in-jar="/" />
+      </element>
+    </root>
+  </artifact>
+</component>

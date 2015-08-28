@@ -20,7 +20,8 @@
                 <ToolBar prefHeight="35.0" prefWidth="1.7976931348623157E308" GridPane.rowIndex="0"
                          GridPane.valignment="CENTER">
                     <items>
-                        <TextField maxWidth="1.7976931348623157E308" promptText="%filter" HBox.hgrow="SOMETIMES"/>
+                        <TextField maxWidth="1.7976931348623157E308" promptText="%filter" HBox.hgrow="SOMETIMES"
+                                focusTraversable="false"/>
                         <Button mnemonicParsing="false">
                             <graphic>
                                 <ImageView>
