@@ -4,19 +4,16 @@ import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.format.AutoFormat;
 import com.temporaryteam.treenote.io.export.Exporter;
 import com.temporaryteam.treenote.model.NoticeTree;
-import com.temporaryteam.treenote.model.NoticeTreeItem;
 import com.temporaryteam.treenote.model.PreviewStyles;
 import com.temporaryteam.treenote.view.Chooser;
 import com.temporaryteam.treenote.view.ImportHtmlWindow;
 import com.temporaryteam.treenote.view.SimpleAlert;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import org.json.JSONException;
 
@@ -31,7 +28,7 @@ public class MainController {
     @FXML
     private CheckMenuItem wordWrapItem;
     @FXML
-    private MenuItem itemImportFromWeb;
+    private MenuItem itemImportFromWeb, switchOrientationItem;
     @FXML
     private Menu previewStyleMenu;
     @FXML
@@ -47,11 +44,9 @@ public class MainController {
     @FXML
     private NoticeEditorController noticeEditorController;
 
-    private NoticeTree tree;
     private File fileSaved;
     private ImportHtmlWindow importHtmlWindow = new ImportHtmlWindow();
     private BooleanProperty saved = new SimpleBooleanProperty(false);
-    private ObjectProperty<NoticeTreeItem> currentNotice = new SimpleObjectProperty<>();
 
     /**
      * Initializes the controller class.
@@ -66,31 +61,20 @@ public class MainController {
             final String cssPath = style.getCssPath();
             RadioMenuItem item = new RadioMenuItem(style.getName());
             item.setToggleGroup(previewStyleGroup);
-            if (cssPath == null) {
+            item.setOnAction(event -> {
+                String path = cssPath;
+                if (path != null) {
+                    path = getClass().getResource(path).toExternalForm();
+                }
+                noticeEditorController.setWebStylesheet(path);
+            });
+            if (style == PreviewStyles.DEFAULT) {
+                noticeEditorController.setWebStylesheet(getClass().getResource(cssPath).toExternalForm());
                 item.setSelected(true);
             }
-            item.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent e) {
-                    String path = cssPath;
-                    if (path != null) {
-                        path = getClass().getResource(path).toExternalForm();
-                    }
-                    noticeEditorController.setWebStylesheet(path);
-                }
-            });
             previewStyleMenu.getItems().add(item);
         }
 
-        //hideEditorMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
-        //    editorPanel.getDividers().get(0).setPosition(newValue ? 0 : 0.5);
-        //});
-        //noticeArea.wrapTextProperty().bind(wordWrapItem.selectedProperty());
-
-        //noticeTreeView.rootProperty().addListener(observable -> {
-        //    if (!saved.get()) updateWindowTitle(); // force update when root changed if already "not saved"
-        //    else saved.set(false); // or regular update title
-        //    noticeTreeView.getRoot().addEventHandler(NoticeTree.documentChangedEvent(), event -> saved.set(false));
-        //});
         saved.addListener(observable -> updateWindowTitle()); // update only from this listener
         Context.getPrimaryStage().setOnCloseRequest(event -> {
             if (!saved.get()) {
@@ -100,10 +84,31 @@ public class MainController {
             }
         });
         noticeEditorController.currentNotice().bind(noticeTreeController.currentNoticeProperty());
-        currentNotice.bind(noticeTreeController.currentNoticeProperty());
-        currentNotice.addListener((observable, oldValue, newValue) -> {
+        noticeTreeController.currentNoticeProperty().addListener((observable, oldValue, newValue) -> {
             boolean isBranch = newValue == null || newValue.isBranch();
             itemImportFromWeb.setDisable(isBranch);
+        });
+        Platform.runLater(this::postInit);
+    }
+
+    /* Called when all views initialized */
+    private void postInit() {
+        SplitPane editorPanel = Context.findById(mainPane, "#editorPanel", SplitPane.class);
+        TextArea noticeArea = Context.findById(mainPane, "#noticeArea", TextArea.class);
+        TreeView noticeTreeView = Context.findById(mainPane, "#noticeTreeView", TreeView.class);
+
+        hideEditorMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            editorPanel.getDividers().get(0).setPosition(newValue ? 0 : 0.5);
+        });
+        switchOrientationItem.setOnAction(event -> {
+            editorPanel.setOrientation(editorPanel.getOrientation() == Orientation.HORIZONTAL
+                    ? Orientation.VERTICAL : Orientation.HORIZONTAL);
+        });
+        noticeArea.wrapTextProperty().bind(wordWrapItem.selectedProperty());
+        noticeTreeView.rootProperty().addListener(observable -> {
+            if (!saved.get()) updateWindowTitle(); // force update when root changed if already "not saved"
+            else saved.set(false); // or regular update title
+            noticeTreeView.getRoot().addEventHandler(NoticeTree.documentChangedEvent(), event -> saved.set(false));
         });
         noticeTreeController.rebuildTree(tr("help_msg"));
     }
@@ -204,13 +209,6 @@ public class MainController {
     }
 
     @FXML
-    private void handleSwitchOrientation(ActionEvent event) {
-        // TODO: create object binding in initialize
-        //editorPanel.setOrientation(editorPanel.getOrientation() == Orientation.HORIZONTAL
-        //        ? Orientation.VERTICAL : Orientation.HORIZONTAL);
-    }
-
-    @FXML
     private void handleAbout(ActionEvent event) {
         Context.loadToNewStage("InfoFrame").showAndWait();
     }
@@ -225,7 +223,6 @@ public class MainController {
         String filepath = fileSaved == null ? resources.getString("undefined") : fileSaved.getAbsolutePath();
         String title = "TreeNote - " + filepath;
         if (!saved.get()) title += resources.getString("not_saved");
-        System.out.println("Window title was updated");
         Context.getPrimaryStage().setTitle(title);
     }
 

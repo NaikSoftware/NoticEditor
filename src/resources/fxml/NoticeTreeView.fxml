@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <SplitPane dividerPositions="0.75" orientation="VERTICAL" prefHeight="641.0" prefWidth="399.0"
            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.temporaryteam.treenote.controller.NoticeTreeController">
+           fx:controller="com.temporaryteam.treenote.controller.NoticeTreeController" fx:id="mainView">
     <items>
-        <GridPane fx:id="mainView">
+        <GridPane>
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="250.0"/>
             </columnConstraints>
@@ -92,7 +92,7 @@
                             </tooltip>
                         </Button>
                         <Pane HBox.hgrow="ALWAYS"/>
-                        <ChoiceBox fx:id="choiceBoxNoticeStatus" HBox.hgrow="ALWAYS" styleClass="for_leaf">
+                        <ChoiceBox fx:id="choiceBoxNoticeStatus" HBox.hgrow="ALWAYS" styleClass="for-leaf">
                             <tooltip>
                                 <Tooltip text="%status"/>
                             </tooltip>
@@ -106,8 +106,8 @@
                         <Insets bottom="3.0" top="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <ListView fx:id="listAttached" prefWidth="200.0" GridPane.rowIndex="2" id="for_leaf"/>
-                <GridPane GridPane.rowIndex="3" styleClass="for_leaf">
+                <ListView fx:id="listAttached" prefWidth="200.0" GridPane.rowIndex="2" styleClass="for-leaf"/>
+                <GridPane GridPane.rowIndex="3" styleClass="for-leaf">
                     <columnConstraints>
                         <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0"/>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="60.0" prefWidth="100.0"/>

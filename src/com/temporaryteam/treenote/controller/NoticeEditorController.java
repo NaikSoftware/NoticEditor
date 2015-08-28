@@ -2,6 +2,7 @@ package com.temporaryteam.treenote.controller;
 
 import com.temporaryteam.treenote.io.export.Exporter;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.pegdown.PegDownProcessor;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -33,6 +35,7 @@ public class NoticeEditorController implements Initializable {
     private PegDownProcessor processor;
     private ObjectProperty<NoticeTreeItem> currentNotice = new SimpleObjectProperty<>();
     private NoticeTreeItem currentTreeitem;
+    private boolean selectNotice;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -43,7 +46,7 @@ public class NoticeEditorController implements Initializable {
         currentNotice.addListener((observable1, oldValue, newValue) -> changeCurrentNotice(newValue));
         noticeArea.textProperty().addListener((observable, oldVal, newVal) -> {
             engine.loadContent(processor.markdownToHtml(newVal));
-            if (currentTreeitem != null) {
+            if (currentTreeitem != null && !selectNotice) {
                 currentTreeitem.changeContent(newVal);
             }
         });
@@ -62,9 +65,11 @@ public class NoticeEditorController implements Initializable {
     }
 
     private void changeCurrentNotice(NoticeTreeItem item) {
+        selectNotice = true;
         boolean isLeaf = item != null && item.isLeaf();
         currentTreeitem = isLeaf ? item : null;
         noticeArea.setText(isLeaf ? item.getContent() : "");
         noticeArea.setDisable(!isLeaf);
+        selectNotice = false;
     }
 }

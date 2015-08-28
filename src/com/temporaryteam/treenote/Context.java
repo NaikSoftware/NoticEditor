@@ -1,6 +1,7 @@
 package com.temporaryteam.treenote;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -8,7 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Holds primary stage and resource bundle.
@@ -63,6 +64,28 @@ public class Context {
 
     public static URL getFXML(String layout_name) {
         return Context.class.getResource(FXML_DIR + layout_name + EXT);
+    }
+
+    public static Set<Node> findByCssClass(Parent root, String cssClass) {
+        Set<Node> result = new HashSet<>(root.lookupAll(cssClass));
+        root.getChildrenUnmodifiable().stream()
+                .filter(n -> n instanceof Parent)
+                .map(n -> (Parent) n)
+                .forEach(n -> result.addAll(findByCssClass(n, cssClass)));
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T findById(Parent parent, String cssId, Class<T> tClass) {
+        Node node = parent.lookup(cssId);
+        if (node != null) return (T) node;
+        else {
+            return parent.getChildrenUnmodifiable().stream()
+                    .filter(n -> n instanceof Parent)
+                    .map(n -> (T) findById((Parent) n, cssId, tClass))
+                    .filter(n -> n != null)
+                    .findFirst().get();
+        }
     }
 
     private static Stage loadToStage(String layout_name, Stage stage) {

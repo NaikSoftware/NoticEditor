@@ -9,7 +9,7 @@
           xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.temporaryteam.treenote.controller.ImportHtmlController">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0"/>
         <ColumnConstraints hgrow="SOMETIMES"/>
         <ColumnConstraints halignment="CENTER" hgrow="NEVER"/>
         <ColumnConstraints halignment="CENTER" hgrow="NEVER"/>

@@ -1,10 +1,11 @@
 package com.temporaryteam.treenote.model;
 
 public enum PreviewStyles {
-    DEFAULT("Default"),
+    EMPTY("Empty"),
     GITHUB("GitHub", "github.css"),
     MARKDOWN("Markdown", "markdown.css");
 
+    public static final PreviewStyles DEFAULT = MARKDOWN;
     public static final String PATH = "/resources/styles/markdown/";
 
     private final String name;

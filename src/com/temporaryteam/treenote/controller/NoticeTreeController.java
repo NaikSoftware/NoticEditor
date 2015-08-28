@@ -44,7 +44,7 @@ public class NoticeTreeController implements Initializable {
     private ObjectProperty<NoticeTreeItem> currentNoticeProperty = new SimpleObjectProperty<>();
     private NoticeTreeItem currentTreeItem;
     private NoticeTree noticeTree;
-    private Set<Node> enabledForleaf;
+    private Set<Node> disabledForBranch;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -134,21 +134,22 @@ public class NoticeTreeController implements Initializable {
         if (currentTreeItem != null && currentTreeItem.isLeaf()) {
             choiceBoxNoticeStatus.valueProperty().unbindBidirectional(currentTreeItem.statusProperty());
         }
-        if (item == null || item.isBranch()) {
+        boolean selectBranch = item == null || item.isBranch();
+        if (selectBranch) {
             choiceBoxNoticeStatus.getSelectionModel().clearSelection();
             listAttached.setItems(emptyList);
-            //settingsPane.setDisable(true);
-            //noticeArea.setEditable(false);
-            //noticeArea.setText("");
         } else {
             choiceBoxNoticeStatus.valueProperty().bindBidirectional(item.statusProperty());
             listAttached.setItems(item.getAttachesForDisplay());
-            //settingsPane.setDisable(false);
-            //noticeArea.setEditable(true);
-            //noticeArea.setText(item.getContent());
         }
+        for (Node node : getDisabledForBranch()) node.setDisable(selectBranch);
         currentNoticeProperty.set(item);
         currentTreeItem = item;
+    }
+
+    private Set<Node> getDisabledForBranch() {
+        if (disabledForBranch == null) disabledForBranch = Context.findByCssClass(mainView, ".for-leaf");
+        return disabledForBranch;
     }
 
     public NoticeTree getNoticeTree() {

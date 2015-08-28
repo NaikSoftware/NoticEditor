@@ -110,6 +110,7 @@ public class NoticeTreeItem extends TreeItem<String> {
     public void changeContent(String content) {
         if (isLeaf()) {
             this.content = content;
+            fireChanges();
         }
     }
 
