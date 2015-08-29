@@ -63,7 +63,7 @@
                     </children>
                 </VBox>
                 <VBox fx:id="notificationBox" alignment="CENTER" maxWidth="-Infinity" styleClass="notificationBox"
-                      visible="false" StackPane.alignment="CENTER" maxHeight="50.0">
+                      visible="false" StackPane.alignment="BOTTOM_CENTER" maxHeight="50.0">
                     <children>
                         <Label fx:id="notificationLabel" styleClass="notificationLabel" textAlignment="CENTER"/>
                     </children>

@@ -79,9 +79,9 @@ public class MainController {
         saved.addListener(observable -> updateWindowTitle()); // update only from this listener
         Context.getPrimaryStage().setOnCloseRequest(event -> {
             if (!saved.get()) {
-                SimpleAlert.confirm(tr("exit_alert")).ifPresent(btn -> {
-                    if (btn != ButtonType.APPLY) event.consume();
-                });
+                SimpleAlert.confirm(tr("not_saved_alert"))
+                        .filter(btn -> btn != ButtonType.APPLY)
+                        .ifPresent(btn -> event.consume());
             }
         });
         noticeEditorController.currentNotice().bind(noticeTreeController.currentNoticeProperty());
@@ -116,8 +116,12 @@ public class MainController {
 
     @FXML
     private void handleNew(ActionEvent event) {
-        fileSaved = null;
-        noticeTreeController.rebuildTree(tr("help_msg"));
+        SimpleAlert.confirm(tr("not_saved_alert"))
+                .filter(btn -> btn == ButtonType.APPLY)
+                .ifPresent(btn -> {
+                    fileSaved = null;
+                    noticeTreeController.rebuildTree(tr("help_msg"));
+                });
     }
 
     @FXML
@@ -204,9 +208,9 @@ public class MainController {
 
     @FXML
     private void handleExit(ActionEvent event) {
-        SimpleAlert.confirm(tr("exit_alert")).ifPresent(btn -> {
-            if (btn == ButtonType.APPLY) Platform.exit();
-        });
+        SimpleAlert.confirm(tr("not_saved_alert"))
+                .filter(btn -> btn == ButtonType.APPLY)
+                .ifPresent(btn -> Platform.exit());
     }
 
     @FXML
