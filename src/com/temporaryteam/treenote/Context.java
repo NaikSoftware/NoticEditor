@@ -76,16 +76,14 @@ public class Context {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T findById(Parent parent, String cssId, Class<T> tClass) {
-        Node node = parent.lookup(cssId);
-        if (node != null) return (T) node;
-        else {
-            return parent.getChildrenUnmodifiable().stream()
-                    .filter(n -> n instanceof Parent)
-                    .map(n -> (T) findById((Parent) n, cssId, tClass))
-                    .filter(n -> n != null)
-                    .findFirst().get();
-        }
+    public static <T extends Node> T findById(Parent parent, String cssId) {
+        return (T) Optional.ofNullable(parent.lookup(cssId))
+                .orElse(parent.getChildrenUnmodifiable().stream()
+                        .filter(n -> n instanceof Parent)
+                        .map(n -> (T) findById((Parent) n, cssId))
+                        .filter(n -> n != null)
+                        .findFirst()
+                        .orElse(null));
     }
 
     private static Stage loadToStage(String layout_name, Stage stage) {

@@ -7,6 +7,7 @@ import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.PreviewStyles;
 import com.temporaryteam.treenote.view.Chooser;
 import com.temporaryteam.treenote.view.ImportHtmlWindow;
+import com.temporaryteam.treenote.view.Notification;
 import com.temporaryteam.treenote.view.SimpleAlert;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -93,9 +94,9 @@ public class MainController {
 
     /* Called when all views initialized */
     private void postInit() {
-        SplitPane editorPanel = Context.findById(mainPane, "#editorPanel", SplitPane.class);
-        TextArea noticeArea = Context.findById(mainPane, "#noticeArea", TextArea.class);
-        TreeView noticeTreeView = Context.findById(mainPane, "#noticeTreeView", TreeView.class);
+        SplitPane editorPanel = Context.findById(mainPane, "#editorPanel");
+        TextArea noticeArea = Context.findById(mainPane, "#noticeArea");
+        TreeView noticeTreeView = Context.findById(mainPane, "#noticeTreeView");
 
         hideEditorMenuItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
             editorPanel.getDividers().get(0).setPosition(newValue ? 0 : 0.5);
@@ -193,7 +194,7 @@ public class MainController {
             toggleWaiting(false);
             if (error == null) {
                 saved.set(true);
-                SimpleAlert.info(tr("saved"));
+                Notification.success(tr("saved"));
             } else {
                 SimpleAlert.error(tr("save_error"), error);
             }

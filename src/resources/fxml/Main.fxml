@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 <VBox maxHeight="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.temporaryteam.treenote.controller.MainController">
+    <stylesheets>
+        <URL value="@styles/main.css"/>
+    </stylesheets>
     <children>
         <MenuBar fx:id="menuBar">
             <menus>
@@ -14,10 +18,15 @@
                         <MenuItem onAction="#handleSave" text="%save"/>
                         <MenuItem onAction="#handleSaveAs" text="%save_as"/>
                         <Menu text="%export_to">
-                            <MenuItem onAction="#handleExportHtml" text="HTML"/>
+                            <items>
+                                <MenuItem onAction="#handleExportHtml" text="HTML"/>
+                            </items>
                         </Menu>
                         <Menu text="%import_from">
-                            <MenuItem fx:id="itemImportFromWeb" onAction="#handleImportFromWeb" text="Web" disable="true"/>
+                            <items>
+                                <MenuItem fx:id="itemImportFromWeb" disable="true" onAction="#handleImportFromWeb"
+                                          text="Web"/>
+                            </items>
                         </Menu>
                         <MenuItem onAction="#handleExit" text="%exit"/>
                     </items>
@@ -37,17 +46,29 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <VBox maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS" maxWidth="1.7976931348623157E308">
+        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
             <children>
-                <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0" visible="false"/>
-                <SplitPane fx:id="mainPane" dividerPositions="0.35" maxHeight="1.7976931348623157E308"
-                           maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
-                    <items>
-                        <fx:include fx:id="noticeTree" source="NoticeTreeView.fxml" SplitPane.resizableWithParent="false"/>
-                        <fx:include fx:id="noticeEditor" source="NoticeEditorView.fxml"/>
-                    </items>
-                </SplitPane>
+                <VBox>
+                    <children>
+                        <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="10.0"
+                                     visible="false"/>
+                        <SplitPane fx:id="mainPane" dividerPositions="0.35" maxHeight="1.7976931348623157E308"
+                                   maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                            <items>
+                                <fx:include fx:id="noticeTree" source="NoticeTreeView.fxml"
+                                            SplitPane.resizableWithParent="false"/>
+                                <fx:include fx:id="noticeEditor" source="NoticeEditorView.fxml"/>
+                            </items>
+                        </SplitPane>
+                    </children>
+                </VBox>
+                <VBox fx:id="notificationBox" alignment="CENTER" maxWidth="-Infinity" styleClass="notificationBox"
+                      visible="false" StackPane.alignment="CENTER" maxHeight="50.0">
+                    <children>
+                        <Label fx:id="notificationLabel" styleClass="notificationLabel" textAlignment="CENTER"/>
+                    </children>
+                </VBox>
             </children>
-        </VBox>
+        </StackPane>
     </children>
 </VBox>
