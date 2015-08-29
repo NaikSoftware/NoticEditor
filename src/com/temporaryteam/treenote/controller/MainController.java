@@ -2,6 +2,7 @@ package com.temporaryteam.treenote.controller;
 
 import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.format.AutoFormat;
+import com.temporaryteam.treenote.io.export.EncryptedZipExporter;
 import com.temporaryteam.treenote.io.export.Exporter;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.PreviewStyles;
@@ -116,12 +117,13 @@ public class MainController {
 
     @FXML
     private void handleNew(ActionEvent event) {
-        SimpleAlert.confirm(tr("not_saved_alert"))
-                .filter(btn -> btn == ButtonType.APPLY)
-                .ifPresent(btn -> {
-                    fileSaved = null;
-                    noticeTreeController.rebuildTree(tr("help_msg"));
-                });
+        if (!saved.get() && SimpleAlert.confirm(tr("not_saved_alert"))
+                .filter(btn -> btn != ButtonType.APPLY)
+                .isPresent())
+            return;
+
+        fileSaved = null;
+        noticeTreeController.rebuildTree(tr("help_msg"));
     }
 
     @FXML
@@ -153,7 +155,7 @@ public class MainController {
     @FXML
     private void handleSaveAs(ActionEvent event) {
         fileSaved = Chooser.file().save()
-                .filter(Chooser.ZIP, Chooser.JSON)
+                .filter(Chooser.ZIP, Chooser.JSON, Chooser.ENCRYPTED_ZIP)
                 .title("Save notice")
                 .show();
         if (fileSaved == null)
@@ -166,6 +168,13 @@ public class MainController {
         if (Chooser.JSON.equals(Chooser.getLastSelectedExtensionFilter())
                 || file.getName().toLowerCase().endsWith(".json")) {
             processExport(Exporter.JSON.setup(file, noticeTreeController.getNoticeTree()));
+        } else if (Chooser.ENCRYPTED_ZIP.equals(Chooser.getLastSelectedExtensionFilter())
+                || Exporter.ENCRYPTED_ZIP.getLastFile() != file) {
+            EncryptedZipExporter exporter = Exporter.ENCRYPTED_ZIP;
+            if (exporter.getLastFile() != null && exporter.getLastFile().equals(file)) {
+                SimpleAlert.input(tr("input_pass"), "").ifPresent(exporter::setPassword);
+            }
+            processExport(exporter.setup(file, noticeTreeController.getNoticeTree()));
         } else {
             processExport(Exporter.ZIP.setup(file, noticeTreeController.getNoticeTree()));
         }

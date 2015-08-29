@@ -11,6 +11,7 @@ public abstract class Exporter {
 
     public static final JsonExporter JSON = new JsonExporter();
     public static final ZipExporter ZIP = new ZipExporter();
+    public static final EncryptedZipExporter ENCRYPTED_ZIP = new EncryptedZipExporter();
     public static final HtmlExporter HTML = new HtmlExporter();
 
     private NoticeTree tree;

@@ -70,7 +70,7 @@ public class Context {
         Set<Node> result = new HashSet<>(root.lookupAll(cssClass));
         root.getChildrenUnmodifiable().stream()
                 .filter(n -> n instanceof Parent)
-                .map(n -> (Parent) n)
+                .map(Parent.class::cast)
                 .forEach(n -> result.addAll(findByCssClass(n, cssClass)));
         return result;
     }

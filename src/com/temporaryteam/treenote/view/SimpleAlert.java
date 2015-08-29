@@ -4,6 +4,7 @@ import com.temporaryteam.treenote.Context;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
@@ -30,6 +31,16 @@ public class SimpleAlert extends Alert {
         alert.showAndWait();
     }
 
+    public static Optional<String> input(String header, String text) {
+        SimpleAlert alert = getInstance(AlertType.NONE, ButtonType.OK);
+        alert.setHeaderText(header);
+        alert.getDialogPane().setExpandableContent(alert.expContent);
+        alert.getDialogPane().setExpanded(true);
+        alert.expTextField.setText(text);
+        alert.expContent.add(alert.expTextField, 0, 0);
+        return alert.showAndWait().map(btn -> alert.expTextField.getText());
+    }
+
     public static void error(String header, Exception exception) {
         SimpleAlert alert = getInstance(AlertType.ERROR, ButtonType.APPLY);
         alert.setHeaderText(header);
@@ -37,7 +48,8 @@ public class SimpleAlert extends Alert {
         alert.getDialogPane().setExpandableContent(alert.expContent);
         StringWriter sw = new StringWriter();
         exception.printStackTrace(new PrintWriter(sw));
-        alert.errorTextArea.setText(sw.toString());
+        alert.expTextArea.setText(sw.toString());
+        alert.expContent.add(alert.expTextArea, 0, 0);
         alert.showAndWait();
     }
 
@@ -47,27 +59,32 @@ public class SimpleAlert extends Alert {
         simpleAlert.getDialogPane().setExpandableContent(null);
         simpleAlert.getButtonTypes().clear();
         simpleAlert.getButtonTypes().addAll(buttons);
+        simpleAlert.expContent.getChildren().clear();
         return simpleAlert;
     }
 
-    public final TextArea errorTextArea;
+    public final TextArea expTextArea;
+    public final TextField expTextField;
     public final GridPane expContent;
 
     public SimpleAlert() {
         super(AlertType.NONE);
         initOwner(Context.getPrimaryStage());
 
-        errorTextArea = new TextArea();
-        errorTextArea.setEditable(false);
+        expTextArea = new TextArea();
+        expTextArea.setEditable(false);
+        expTextArea.setMaxWidth(Double.MAX_VALUE);
+        expTextArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(expTextArea, Priority.ALWAYS);
+        GridPane.setHgrow(expTextArea, Priority.ALWAYS);
 
-        errorTextArea.setMaxWidth(Double.MAX_VALUE);
-        errorTextArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(errorTextArea, Priority.ALWAYS);
-        GridPane.setHgrow(errorTextArea, Priority.ALWAYS);
+        expTextField = new TextField();
+        expTextField.setMaxWidth(Double.MAX_VALUE);
+        GridPane.setVgrow(expTextField, Priority.ALWAYS);
+        GridPane.setHgrow(expTextField, Priority.NEVER);
 
         expContent = new GridPane();
         expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(errorTextArea, 0, 1);
     }
 
 }

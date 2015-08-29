@@ -1,11 +1,13 @@
 package com.temporaryteam.treenote.format;
 
+import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.io.IOUtil;
+import com.temporaryteam.treenote.io.export.Exporter;
 import com.temporaryteam.treenote.model.Attached;
 import com.temporaryteam.treenote.model.NoticeStatus;
 import com.temporaryteam.treenote.model.NoticeTree;
 import com.temporaryteam.treenote.model.NoticeTreeItem;
-import com.temporaryteam.treenote.view.InputPasswordDialog;
+import com.temporaryteam.treenote.view.SimpleAlert;
 import javafx.scene.control.TreeItem;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import static com.temporaryteam.treenote.format.JsonFields.*;
@@ -60,9 +63,6 @@ public class ZipWithIndexFormat {
         parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
         parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
         parameters.setSourceExternalStream(true);
-        if (currZip.isValidZipFile() && currZip.isEncrypted()) {
-
-        }
     }
 
     private ZipWithIndexFormat(File file, String password) throws ZipException {
@@ -78,8 +78,20 @@ public class ZipWithIndexFormat {
     }
 
     public NoticeTree importDocument() throws IOException, JSONException, ZipException {
+        if (currZip.isValidZipFile() && currZip.isEncrypted()) {
+            ResourceBundle res = Context.getResources();
+            SimpleAlert.input(res.getString("input_pass"), "")
+                    .ifPresent(pass -> {
+                        try {
+                            currZip.setPassword(pass);
+                            Exporter.ENCRYPTED_ZIP.setPassword(pass);
+                        } catch (ZipException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
         String indexContent = readFile(INDEX_JSON);
-        if (indexContent == null || indexContent.isEmpty()) {
+        if (indexContent.isEmpty()) {
             throw new IOException("Invalid file format");
         }
 
