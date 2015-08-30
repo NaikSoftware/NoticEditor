@@ -26,4 +26,8 @@ public class ZipExporter extends Exporter {
             throw new ExportException(e);
         }
     }
+
+    protected File getFile() {
+        return file;
+    }
 }

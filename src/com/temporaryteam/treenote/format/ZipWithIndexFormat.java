@@ -77,18 +77,9 @@ public class ZipWithIndexFormat {
         parameters.setPassword(password);
     }
 
-    public NoticeTree importDocument() throws IOException, JSONException, ZipException {
+    public NoticeTree importDocument() throws IOException, JSONException, ZipException, FileEncryptedException {
         if (currZip.isValidZipFile() && currZip.isEncrypted()) {
-            ResourceBundle res = Context.getResources();
-            SimpleAlert.input(res.getString("input_pass"), "")
-                    .ifPresent(pass -> {
-                        try {
-                            currZip.setPassword(pass);
-                            Exporter.ENCRYPTED_ZIP.setPassword(pass);
-                        } catch (ZipException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            throw new FileEncryptedException();
         }
         String indexContent = readFile(INDEX_JSON);
         if (indexContent.isEmpty()) {
@@ -97,6 +88,15 @@ public class ZipWithIndexFormat {
 
         JSONObject index = new JSONObject(indexContent);
         return new NoticeTree(readNotices("", index));
+    }
+
+    public NoticeTree importDocument(String password) throws ZipException, JSONException, FileEncryptedException, IOException {
+        currZip.setPassword(password);
+        try {
+            return importDocument();
+        } catch (JSONException ex) {
+            throw new FileEncryptedException();
+        }
     }
 
     private String readFile(String path) throws IOException, ZipException {

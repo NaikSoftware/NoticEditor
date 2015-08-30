@@ -1,4 +1,4 @@
-package com.temporaryteam.noticeditor.model;
+package com.temporaryteam.treenote.model;
 
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;

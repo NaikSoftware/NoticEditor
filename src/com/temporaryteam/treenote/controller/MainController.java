@@ -2,6 +2,7 @@ package com.temporaryteam.treenote.controller;
 
 import com.temporaryteam.treenote.Context;
 import com.temporaryteam.treenote.format.AutoFormat;
+import com.temporaryteam.treenote.format.FileEncryptedException;
 import com.temporaryteam.treenote.io.export.EncryptedZipExporter;
 import com.temporaryteam.treenote.io.export.Exporter;
 import com.temporaryteam.treenote.model.NoticeTree;
@@ -17,6 +18,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+import net.lingala.zip4j.exception.ZipException;
 import org.json.JSONException;
 
 import java.io.File;
@@ -128,17 +131,19 @@ public class MainController {
 
     @FXML
     private void handleOpen(ActionEvent event) {
+        fileSaved = Chooser.file().open()
+                .filter(Chooser.SUPPORTED, Chooser.ALL)
+                .title("Open notice")
+                .show();
+        if (fileSaved == null) {
+            return;
+        }
         try {
-            fileSaved = Chooser.file().open()
-                    .filter(Chooser.SUPPORTED, Chooser.ALL)
-                    .title("Open notice")
-                    .show();
-            if (fileSaved == null) {
-                return;
-            }
             noticeTreeController.openTree(AutoFormat.open(fileSaved));
             saved.set(true); // open from FS - already saved
-        } catch (IOException | JSONException e) {
+        } catch (FileEncryptedException e) {
+            SimpleAlert.error(tr("wrong_pass"), e);
+        } catch (ZipException | JSONException | IOException e) {
             SimpleAlert.error(tr("open_error"), e);
         }
     }
@@ -148,35 +153,36 @@ public class MainController {
         if (fileSaved == null) {
             handleSaveAs(event);
         } else {
-            saveDocument(fileSaved);
+            saveDocument(fileSaved, true);
         }
     }
 
     @FXML
     private void handleSaveAs(ActionEvent event) {
         fileSaved = Chooser.file().save()
-                .filter(Chooser.ZIP, Chooser.JSON, Chooser.ENCRYPTED_ZIP)
+                .filter(Chooser.EXPORT_EXTENSIONS)
                 .title("Save notice")
                 .show();
-        if (fileSaved == null)
-            return;
+        if (fileSaved == null) return;
 
-        saveDocument(fileSaved);
+        saveDocument(fileSaved, false);
     }
 
-    private void saveDocument(File file) {
-        if (Chooser.JSON.equals(Chooser.getLastSelectedExtensionFilter())
-                || file.getName().toLowerCase().endsWith(".json")) {
-            processExport(Exporter.JSON.setup(file, noticeTreeController.getNoticeTree()));
-        } else if (Chooser.ENCRYPTED_ZIP.equals(Chooser.getLastSelectedExtensionFilter())
-                || Exporter.ENCRYPTED_ZIP.getLastFile() != file) {
+    private void saveDocument(File file, boolean resave) {
+        FileChooser.ExtensionFilter fileType = Chooser.getLastSelectedExtensionFilter();
+        if (fileType == Chooser.ENC_ZIP) {
+            System.out.println("Export Enc ZIP");
             EncryptedZipExporter exporter = Exporter.ENCRYPTED_ZIP;
-            if (exporter.getLastFile() != null && exporter.getLastFile().equals(file)) {
+            if (!resave) {
                 SimpleAlert.input(tr("input_pass"), "").ifPresent(exporter::setPassword);
             }
             processExport(exporter.setup(file, noticeTreeController.getNoticeTree()));
-        } else {
+        } else if (fileType == Chooser.ZIP) {
+            System.out.println("Export ZIP");
             processExport(Exporter.ZIP.setup(file, noticeTreeController.getNoticeTree()));
+        } else if (fileType == Chooser.JSON) {
+            System.out.println("Export JSON");
+            processExport(Exporter.JSON.setup(file, noticeTreeController.getNoticeTree()));
         }
     }
 

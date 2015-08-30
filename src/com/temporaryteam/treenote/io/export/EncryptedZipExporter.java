@@ -8,31 +8,24 @@ import java.io.File;
 /**
  * @author Naik
  */
-public class EncryptedZipExporter extends Exporter {
+public class EncryptedZipExporter extends ZipExporter {
 
-    private File file;
     private String password;
-
-    public EncryptedZipExporter setup(File file, NoticeTree tree) {
-        setup(tree);
-        this.file = file;
-        return this;
-    }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     @Override
     void export() throws ExportException {
         try {
-            ZipWithIndexFormat.with(file, password).save(getTree());
+            ZipWithIndexFormat.with(getFile(), password).save(getTree());
         } catch (Exception e) {
             throw new ExportException(e);
         }
-    }
-
-    public File getLastFile() {
-        return file;
     }
 }

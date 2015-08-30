@@ -1,7 +1,5 @@
-package com.temporaryteam.noticeditor.model;
+package com.temporaryteam.treenote.model;
 
-import com.temporaryteam.treenote.model.NoticeStatus;
-import com.temporaryteam.treenote.model.NoticeTreeItem;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
