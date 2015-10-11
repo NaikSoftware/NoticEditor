@@ -30,27 +30,28 @@
 
 * Пошук і заміна
 * Фільтр приміток у дереві
+* Система повтору/відміни дій
 * Вставка зображень і файлів у текст
 * Підсвітка синтаксису мов програмування
 * Тримання не всіх приміток в ОЗП, а лише відкритої
 * Форматування тексту не тільки на виході, а і в самому редакторі
 * Онлайн сервіс для збереження і редагування через Web-інтерфейс
 
-## Build
+# Build
 
 #### NetBeans
 1.
 ``` bash
 git clone https://github.com/NaikSoftware/TreeNote.git
-```
-2. Open project in NetBeans
-3. Press *Shift + F11* for clean and build. You can find jar executable in dist/ dir.
+```  
+2. Open project in NetBeans  
+3. Press *Shift + F11* for clean and build. You can find jar executable in dist/ dir.  
 4. For build single-jar (with libs) launch *package-single* task in build.xml.
 
 #### Intellij IDEA
-Just open and build project
+Just clone https://github.com/NaikSoftware/TreeNote.git , open and build project
 
 #### Command line
-`make all`
+`git clone https://github.com/NaikSoftware/TreeNote.git && cd TreeNote && make all`
 
 
